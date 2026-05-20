@@ -1,0 +1,70 @@
+name: Sync upstream
+
+on:
+  schedule:
+    # Every Monday 09:00 UTC. Override / run manually via Actions tab.
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/chekusu/sandbank.git
+          git fetch upstream main
+
+      - name: Attempt fast-forward / clean merge
+        id: merge
+        run: |
+          # If main is already up-to-date with upstream, exit early
+          if git merge-base --is-ancestor upstream/main HEAD; then
+            echo "no_changes=true" >> "$GITHUB_OUTPUT"
+            echo "Already up to date with upstream/main"
+            exit 0
+          fi
+          # Try a no-ff merge that we can revert if conflicts arise
+          if git merge upstream/main --no-edit -m "chore: sync upstream/main"; then
+            echo "merged=true" >> "$GITHUB_OUTPUT"
+            echo "Clean merge succeeded"
+          else
+            git merge --abort
+            echo "conflict=true" >> "$GITHUB_OUTPUT"
+            echo "Conflict detected"
+          fi
+
+      - name: Push merged main
+        if: steps.merge.outputs.merged == 'true'
+        run: git push origin main
+
+      - name: Open PR for conflict resolution
+        if: steps.merge.outputs.conflict == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="sync/upstream-$(date +%Y%m%d-%H%M)"
+          git checkout -b "$BRANCH"
+          # Force merge attempt so conflict markers land on the branch
+          git merge upstream/main --no-edit -X ours || true
+          # Stage everything so the PR contains a working tree (resolver will edit)
+          git add -A
+          git commit -m "chore(sync): upstream/main with conflicts [needs review]" || true
+          git push origin "$BRANCH"
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "sync: upstream/main has conflicts ($(date +%Y-%m-%d))" \
+            --body "$(printf 'Weekly upstream sync hit conflicts. Resolve before merging.\n\nUpstream: https://github.com/chekusu/sandbank\nThis PR uses the `ours` strategy for the initial merge — review the diff carefully.')"
