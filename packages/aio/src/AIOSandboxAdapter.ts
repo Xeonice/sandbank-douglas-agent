@@ -230,12 +230,19 @@ export class AIOSandboxAdapter implements SandboxAdapter {
     });
   }
 
+  /**
+   * Poll the sandbox HTTP API until ready.
+   *
+   * AIO Sandbox does NOT expose `/health` — its readiness endpoint is
+   * `GET /v1/sandbox` which returns environment info JSON. Verified
+   * 2026-05-20 against ghcr.io/agent-infra/sandbox@1.0.16.
+   */
   private async waitHealth(baseUrl: string): Promise<void> {
     const deadline = Date.now() + this.healthTimeoutSec * 1000;
     let lastErr: unknown;
     while (Date.now() < deadline) {
       try {
-        const res = await fetch(`${baseUrl}/health`, { method: 'GET' });
+        const res = await fetch(`${baseUrl}/v1/sandbox`, { method: 'GET' });
         if (res.ok) return;
         lastErr = new Error(`HTTP ${res.status}`);
       } catch (e) {
@@ -245,7 +252,7 @@ export class AIOSandboxAdapter implements SandboxAdapter {
     }
     throw new ProviderError(
       'aio',
-      new Error(`/health did not become ready within ${this.healthTimeoutSec}s: ${(lastErr as Error)?.message ?? 'unknown'}`)
+      new Error(`/v1/sandbox did not become ready within ${this.healthTimeoutSec}s: ${(lastErr as Error)?.message ?? 'unknown'}`)
     );
   }
 
