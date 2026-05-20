@@ -79,6 +79,9 @@ export class AIOSandboxAdapter implements SandboxAdapter {
   }
 
   async createSandbox(config: CreateConfig): Promise<AdapterSandbox> {
+    const image = config.image ?? this.image;
+    await this.ensureImage(image);
+
     const port = await this.allocPort();
     const envArr = Object.entries(config.env ?? {}).map(
       ([k, v]) => `${k}=${v}`
@@ -87,7 +90,7 @@ export class AIOSandboxAdapter implements SandboxAdapter {
     let container: Docker.Container;
     try {
       container = await this.docker.createContainer({
-        Image: config.image ?? this.image,
+        Image: image,
         Env: envArr,
         Labels: { 'sandbank-aio': 'true' },
         HostConfig: {
@@ -168,6 +171,33 @@ export class AIOSandboxAdapter implements SandboxAdapter {
   }
 
   // ── internals ────────────────────────────────────────
+
+  /**
+   * Ensure the AIO Sandbox image is available locally. dockerode's
+   * `createContainer` returns 404 if the image is not pulled, so we pre-pull
+   * here. Already-cached images skip without a network round-trip.
+   */
+  private async ensureImage(image: string): Promise<void> {
+    try {
+      await this.docker.getImage(image).inspect();
+      return; // already cached
+    } catch (e) {
+      if ((e as { statusCode?: number }).statusCode !== 404) {
+        throw new ProviderError('aio', e);
+      }
+    }
+    // Image not cached → pull. dockerode `pull` returns a stream we must drain.
+    await new Promise<void>((resolve, reject) => {
+      this.docker.pull(image, (err: Error | null, stream: NodeJS.ReadableStream | undefined) => {
+        if (err) return reject(new ProviderError('aio', err));
+        if (!stream) return reject(new ProviderError('aio', new Error('pull stream missing')));
+        this.docker.modem.followProgress(
+          stream,
+          (errFinal: Error | null) => (errFinal ? reject(new ProviderError('aio', errFinal)) : resolve()),
+        );
+      });
+    });
+  }
 
   private makeClient(baseUrl: string): SandboxClient {
     const headers: Record<string, string> = {};
