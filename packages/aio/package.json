@@ -1,0 +1,35 @@
+{
+  "name": "@douglas-agent/sandbank-aio",
+  "version": "0.1.0",
+  "description": "AIO Sandbox adapter (字节 agent-infra/sandbox) for Sandbank — dockerode lifecycle + @agent-infra/sandbox SDK for in-container ops",
+  "license": "MIT",
+  "type": "module",
+  "homepage": "https://github.com/Xeonice/sandbank-douglas-agent",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Xeonice/sandbank-douglas-agent.git",
+    "directory": "packages/aio"
+  },
+  "keywords": ["sandbox", "ai-agent", "aio-sandbox", "agent-infra", "bytedance"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@douglas-agent/sandbank-core": "workspace:*",
+    "@agent-infra/sandbox": "^1.0.16",
+    "dockerode": "^4.0.10"
+  },
+  "devDependencies": {
+    "@types/dockerode": "^3.3.40",
+    "typescript": "^5.7.3"
+  }
+}

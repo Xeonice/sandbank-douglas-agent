@@ -1,0 +1,33 @@
+{
+  "name": "@douglas-agent/sandbank-e2b",
+  "version": "0.1.0",
+  "description": "E2B-protocol sandbox adapters (E2B Cloud / E2B Infra / Tencent CubeSandbox) for Sandbank — shared HTTP base + flavor-specific subclasses",
+  "license": "MIT",
+  "type": "module",
+  "homepage": "https://github.com/Xeonice/sandbank-douglas-agent",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Xeonice/sandbank-douglas-agent.git",
+    "directory": "packages/e2b"
+  },
+  "keywords": ["sandbox", "ai-agent", "e2b", "cube-sandbox", "tencent", "firecracker"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@douglas-agent/sandbank-core": "workspace:*",
+    "undici": "^7.5.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
