@@ -7,7 +7,7 @@
   "homepage": "https://sandbank.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chekusu/sandbank.git",
+    "url": "https://github.com/Xeonice/sandbank-douglas-agent.git",
     "directory": "packages/db9"
   },
   "keywords": ["sandbox", "ai-agent", "db9", "postgres", "database", "service"],

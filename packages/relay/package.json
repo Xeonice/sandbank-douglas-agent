@@ -7,7 +7,7 @@
   "homepage": "https://sandbank.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chekusu/sandbank.git",
+    "url": "https://github.com/Xeonice/sandbank-douglas-agent.git",
     "directory": "packages/relay"
   },
   "keywords": [
