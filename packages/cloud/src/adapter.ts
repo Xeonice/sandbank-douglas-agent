@@ -8,8 +8,8 @@ import type {
   SandboxAdapter,
   SandboxInfo,
   SandboxState,
-} from '@sandbank.dev/core'
-import { SandboxNotFoundError, ProviderError } from '@sandbank.dev/core'
+} from '@douglas-agent/sandbank-core'
+import { SandboxNotFoundError, ProviderError } from '@douglas-agent/sandbank-core'
 import { createX402Fetch } from './x402-fetch.js'
 import type { SandbankCloudConfig, CloudBox, CloudExecResult } from './types.js'
 

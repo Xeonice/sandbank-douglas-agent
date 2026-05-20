@@ -1,4 +1,4 @@
-import type { JsonRpcRequest, JsonRpcResponse } from '@sandbank.dev/core'
+import type { JsonRpcRequest, JsonRpcResponse } from '@douglas-agent/sandbank-core'
 import { createRequest } from './rpc.js'
 
 export interface HttpClientConfig {

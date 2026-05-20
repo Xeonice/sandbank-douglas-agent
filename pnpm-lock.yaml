@@ -23,10 +23,10 @@ importers:
 
   packages/agent:
     devDependencies:
-      '@sandbank.dev/core':
+      '@douglas-agent/sandbank-core':
         specifier: workspace:*
         version: link:../core
-      '@sandbank.dev/relay':
+      '@douglas-agent/sandbank-relay':
         specifier: workspace:*
         version: link:../relay
       '@types/node':
@@ -44,7 +44,7 @@ importers:
 
   packages/boxlite:
     dependencies:
-      '@sandbank.dev/core':
+      '@douglas-agent/sandbank-core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -57,7 +57,7 @@ importers:
 
   packages/cloud:
     dependencies:
-      '@sandbank.dev/core':
+      '@douglas-agent/sandbank-core':
         specifier: workspace:*
         version: link:../core
       '@x402/core':
@@ -82,7 +82,7 @@ importers:
       '@cloudflare/sandbox':
         specifier: ^0.7.0
         version: 0.7.6
-      '@sandbank.dev/core':
+      '@douglas-agent/sandbank-core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -98,7 +98,7 @@ importers:
 
   packages/core:
     devDependencies:
-      '@sandbank.dev/relay':
+      '@douglas-agent/sandbank-relay':
         specifier: workspace:*
         version: link:../relay
       '@types/node':
@@ -116,7 +116,7 @@ importers:
 
   packages/daytona:
     dependencies:
-      '@sandbank.dev/core':
+      '@douglas-agent/sandbank-core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -132,7 +132,7 @@ importers:
 
   packages/db9:
     dependencies:
-      '@sandbank.dev/core':
+      '@douglas-agent/sandbank-core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -145,7 +145,7 @@ importers:
 
   packages/flyio:
     dependencies:
-      '@sandbank.dev/core':
+      '@douglas-agent/sandbank-core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -159,7 +159,7 @@ importers:
         specifier: ^8.18.0
         version: 8.19.0
     devDependencies:
-      '@sandbank.dev/core':
+      '@douglas-agent/sandbank-core':
         specifier: workspace:*
         version: link:../core
       '@types/ws':
@@ -171,10 +171,10 @@ importers:
 
   packages/sandbank:
     dependencies:
-      '@sandbank.dev/cloud':
+      '@douglas-agent/sandbank-cloud':
         specifier: workspace:*
         version: link:../cloud
-      '@sandbank.dev/core':
+      '@douglas-agent/sandbank-core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -187,7 +187,7 @@ importers:
 
   packages/skills:
     dependencies:
-      '@sandbank.dev/core':
+      '@douglas-agent/sandbank-core':
         specifier: workspace:*
         version: link:../core
     devDependencies:

@@ -556,8 +556,8 @@ Phase 4 (sandbox token)         ← 依赖 Phase 1（register 改动）
 
 | 包 | 当前版本 | Phase 1 后 | Phase 4 后 |
 |----|---------|-----------|-----------|
-| @sandbank.dev/relay | 0.2.0 | 0.3.0 | 0.4.0 |
-| @sandbank.dev/core | 0.3.4 | 0.3.5 | 0.4.0 |
+| @douglas-agent/sandbank-relay | 0.2.0 | 0.3.0 | 0.4.0 |
+| @douglas-agent/sandbank-core | 0.3.4 | 0.3.5 | 0.4.0 |
 | cloud.sandbank.dev | 0.5.0 | 0.6.0 | 0.7.0 |
 
 Phase 1 是 minor bump（新增 API，不 break 现有）。

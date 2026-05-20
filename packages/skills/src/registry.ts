@@ -1,4 +1,4 @@
-import type { SkillDefinition } from '@sandbank.dev/core'
+import type { SkillDefinition } from '@douglas-agent/sandbank-core'
 import type { SkillSource, SkillRegistry } from './types.js'
 
 export function createSkillRegistry(): SkillRegistry {

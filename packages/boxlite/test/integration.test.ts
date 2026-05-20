@@ -9,7 +9,7 @@ import {
   hasCapability,
   SandboxNotFoundError,
   ProviderError,
-} from '@sandbank.dev/core'
+} from '@douglas-agent/sandbank-core'
 import { BoxLiteAdapter } from '../src/index.js'
 
 const API_TOKEN = process.env['BOXLITE_API_TOKEN'] ?? ''

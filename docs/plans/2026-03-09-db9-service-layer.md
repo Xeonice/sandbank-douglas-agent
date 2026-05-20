@@ -12,7 +12,7 @@
 
 ## Phase 1：Core 接口扩展
 
-> 目标：在 `@sandbank.dev/core` 中定义 Service 相关的类型、能力检测、和 Provider 工厂扩展。
+> 目标：在 `@douglas-agent/sandbank-core` 中定义 Service 相关的类型、能力检测、和 Provider 工厂扩展。
 
 ### 1.1 类型定义
 
@@ -192,7 +192,7 @@ export { withServices } from './capabilities.js'
 
 ---
 
-## Phase 2：@sandbank.dev/db9 包
+## Phase 2：@douglas-agent/sandbank-db9 包
 
 > 目标：实现 db9.ai 的 ServiceProvider 适配器，包括 skill 注入支持。
 
@@ -343,9 +343,9 @@ export function db9SkillDefinition(content: string): SkillDefinition {
 db9 adapter 不是 SandboxProvider，它是独立的 ServiceProvider。用户需要组合使用：
 
 ```typescript
-import { createProvider } from '@sandbank.dev/core'
-import { DaytonaAdapter } from '@sandbank.dev/daytona'
-import { Db9ServiceAdapter } from '@sandbank.dev/db9'
+import { createProvider } from '@douglas-agent/sandbank-core'
+import { DaytonaAdapter } from '@douglas-agent/sandbank-daytona'
+import { Db9ServiceAdapter } from '@douglas-agent/sandbank-db9'
 
 // 计算层
 const sandboxProvider = createProvider(new DaytonaAdapter({ ... }))
@@ -388,7 +388,7 @@ const sandbox = await provider.create({
 
 ```json
 {
-  "name": "@sandbank.dev/db9",
+  "name": "@douglas-agent/sandbank-db9",
   "version": "0.1.0",
   "description": "db9.ai service adapter for Sandbank — serverless PostgreSQL for AI agents",
   "license": "MIT",
@@ -415,7 +415,7 @@ const sandbox = await provider.create({
     "test:e2e": "vitest run --config vitest.e2e.config.ts"
   },
   "dependencies": {
-    "@sandbank.dev/core": "workspace:*"
+    "@douglas-agent/sandbank-core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.3",

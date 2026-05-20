@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 
-vi.mock('@sandbank.dev/cloud', () => ({
+vi.mock('@douglas-agent/sandbank-cloud', () => ({
   createX402Fetch: vi.fn((config: Record<string, unknown>) => ({
     x402Fetch: vi.fn(),
     x402FetchRaw: vi.fn(),

@@ -23,14 +23,14 @@ export async function createSession(config: CreateSessionConfig): Promise<Sessio
   const relayConfig = config.relay ?? { type: 'memory' as const }
   const onError = config.onError ?? (() => {})
 
-  // 启动 relay（memory 模式：动态 import @sandbank.dev/relay）
+  // 启动 relay（memory 模式：动态 import @douglas-agent/sandbank-relay）
   let relayUrl: string
   let wsUrl: string
   let closeRelay: () => Promise<void>
 
   if (relayConfig.type === 'memory') {
-    // Dynamic import: @sandbank.dev/relay is an optional peer dep (no static dependency)
-    const specifier = '@sandbank.dev/relay'
+    // Dynamic import: @douglas-agent/sandbank-relay is an optional peer dep (no static dependency)
+    const specifier = '@douglas-agent/sandbank-relay'
     const relayMod = await import(specifier) as {
       startRelay: (opts: { port: number }) => Promise<{ url: string; wsUrl: string; close: () => Promise<void> }>
     }

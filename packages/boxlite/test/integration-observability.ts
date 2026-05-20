@@ -8,10 +8,10 @@
  * 运行: ANTHROPIC_API_KEY=sk-... pnpm exec tsx test/integration-observability.ts
  */
 
-import { createProvider } from '@sandbank.dev/core'
-import type { SandboxEvent, SandboxObserver } from '@sandbank.dev/core'
-import { injectClaudeHooks, readHookEvents } from '@sandbank.dev/core'
-import { BoxLiteAdapter } from '@sandbank.dev/boxlite'
+import { createProvider } from '@douglas-agent/sandbank-core'
+import type { SandboxEvent, SandboxObserver } from '@douglas-agent/sandbank-core'
+import { injectClaudeHooks, readHookEvents } from '@douglas-agent/sandbank-core'
+import { BoxLiteAdapter } from '@douglas-agent/sandbank-boxlite'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 

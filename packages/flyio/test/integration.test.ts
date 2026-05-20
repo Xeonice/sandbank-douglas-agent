@@ -23,7 +23,7 @@ import {
   SandboxNotFoundError,
   ProviderError,
 
-} from '@sandbank.dev/core'
+} from '@douglas-agent/sandbank-core'
 import { FlyioAdapter } from '../src/index.js'
 
 // ─── Environment ───

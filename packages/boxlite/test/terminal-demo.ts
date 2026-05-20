@@ -9,7 +9,7 @@
  *
  * Then open http://localhost:9091 in your browser.
  */
-import { createProvider, withTerminal } from '@sandbank.dev/core'
+import { createProvider, withTerminal } from '@douglas-agent/sandbank-core'
 import { BoxLiteAdapter } from '../src/index.js'
 import { createServer } from 'node:http'
 

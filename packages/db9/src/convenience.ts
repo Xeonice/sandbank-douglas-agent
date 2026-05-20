@@ -1,4 +1,4 @@
-import type { ServiceInfo, SkillDefinition } from '@sandbank.dev/core'
+import type { ServiceInfo, SkillDefinition } from '@douglas-agent/sandbank-core'
 import { Db9ServiceAdapter, type Db9AdapterConfig } from './adapter.js'
 import { initBrainSchema } from './brain.js'
 import { brainSkillDefinition } from './brain-skill.js'

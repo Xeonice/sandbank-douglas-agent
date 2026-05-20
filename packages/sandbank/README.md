@@ -11,8 +11,8 @@ Sandbank provides a single TypeScript interface for creating, managing, and orch
 AI agents need isolated execution environments. But every cloud provider has a different API — Daytona, Fly.io, Cloudflare Workers all speak different languages. Sandbank unifies them behind one interface:
 
 ```typescript
-import { createProvider } from '@sandbank.dev/core'
-import { DaytonaAdapter } from '@sandbank.dev/daytona'
+import { createProvider } from '@douglas-agent/sandbank-core'
+import { DaytonaAdapter } from '@douglas-agent/sandbank-daytona'
 
 const provider = createProvider(new DaytonaAdapter({ apiKey: '...' }))
 const sandbox = await provider.create({ image: 'node:22' })
@@ -31,13 +31,13 @@ Swap `DaytonaAdapter` for `FlyioAdapter` or `CloudflareAdapter` — zero code ch
 ┌──────────────────────────────────────────────────────┐
 │  Your Application / AI Agent                         │
 ├──────────────────────────────────────────────────────┤
-│  @sandbank.dev/core         Unified Provider Interface   │
-│  @sandbank.dev/skills       Skill Registry & Injection   │
-│  @sandbank.dev/agent        In-sandbox Agent Client      │
-│  @sandbank.dev/relay        Multi-agent Communication    │
+│  @douglas-agent/sandbank-core         Unified Provider Interface   │
+│  @douglas-agent/sandbank-skills       Skill Registry & Injection   │
+│  @douglas-agent/sandbank-agent        In-sandbox Agent Client      │
+│  @douglas-agent/sandbank-relay        Multi-agent Communication    │
 ├──────────────────────────────────────────────────────┤
-│  @sandbank.dev/daytona  @sandbank.dev/flyio  @sandbank.dev/cloudflare  │
-│  @sandbank.dev/boxlite                                   │
+│  @douglas-agent/sandbank-daytona  @douglas-agent/sandbank-flyio  @douglas-agent/sandbank-cloudflare  │
+│  @douglas-agent/sandbank-boxlite                                   │
 │  Provider Adapters                                   │
 ├──────────────────────────────────────────────────────┤
 │  Daytona    Fly.io Machines    Cloudflare Workers     │
@@ -49,14 +49,14 @@ Swap `DaytonaAdapter` for `FlyioAdapter` or `CloudflareAdapter` — zero code ch
 
 | Package | Description |
 |---------|-------------|
-| [`@sandbank.dev/core`](./packages/core) | Provider abstraction, capability system, error types |
-| [`@sandbank.dev/skills`](./packages/skills) | Skill registry and local filesystem loader |
-| [`@sandbank.dev/daytona`](./packages/daytona) | Daytona cloud sandbox adapter |
-| [`@sandbank.dev/flyio`](./packages/flyio) | Fly.io Machines adapter |
-| [`@sandbank.dev/cloudflare`](./packages/cloudflare) | Cloudflare Workers adapter |
-| [`@sandbank.dev/boxlite`](./packages/boxlite) | BoxLite self-hosted Docker adapter |
-| [`@sandbank.dev/relay`](./packages/relay) | WebSocket relay for multi-agent communication |
-| [`@sandbank.dev/agent`](./packages/agent) | Lightweight client for agents running inside sandboxes |
+| [`@douglas-agent/sandbank-core`](./packages/core) | Provider abstraction, capability system, error types |
+| [`@douglas-agent/sandbank-skills`](./packages/skills) | Skill registry and local filesystem loader |
+| [`@douglas-agent/sandbank-daytona`](./packages/daytona) | Daytona cloud sandbox adapter |
+| [`@douglas-agent/sandbank-flyio`](./packages/flyio) | Fly.io Machines adapter |
+| [`@douglas-agent/sandbank-cloudflare`](./packages/cloudflare) | Cloudflare Workers adapter |
+| [`@douglas-agent/sandbank-boxlite`](./packages/boxlite) | BoxLite self-hosted Docker adapter |
+| [`@douglas-agent/sandbank-relay`](./packages/relay) | WebSocket relay for multi-agent communication |
+| [`@douglas-agent/sandbank-agent`](./packages/agent) | Lightweight client for agents running inside sandboxes |
 
 ## Provider Support
 
@@ -105,7 +105,7 @@ Capabilities are opt-in. Use `withVolumes(provider)`, `withPortExpose(sandbox)`,
 Sandbank includes a built-in orchestration layer for multi-agent workflows. The **Relay** handles real-time messaging and shared context between sandboxes.
 
 ```typescript
-import { createSession } from '@sandbank.dev/core'
+import { createSession } from '@douglas-agent/sandbank-core'
 
 const session = await createSession({
   provider,
@@ -131,10 +131,10 @@ await session.waitForAll()
 await session.close()
 ```
 
-Inside the sandbox, agents use `@sandbank.dev/agent`:
+Inside the sandbox, agents use `@douglas-agent/sandbank-agent`:
 
 ```typescript
-import { connect } from '@sandbank.dev/agent'
+import { connect } from '@douglas-agent/sandbank-agent'
 
 const session = await connect() // reads SANDBANK_* env vars
 
@@ -152,15 +152,15 @@ await session.complete({ status: 'success', summary: 'Built 5 API endpoints' })
 
 ```bash
 # Install
-pnpm add @sandbank.dev/core @sandbank.dev/daytona  # or @sandbank.dev/flyio, @sandbank.dev/cloudflare
+pnpm add @douglas-agent/sandbank-core @douglas-agent/sandbank-daytona  # or @douglas-agent/sandbank-flyio, @douglas-agent/sandbank-cloudflare
 
 # Set up provider
 export DAYTONA_API_KEY=your-key
 ```
 
 ```typescript
-import { createProvider } from '@sandbank.dev/core'
-import { DaytonaAdapter } from '@sandbank.dev/daytona'
+import { createProvider } from '@douglas-agent/sandbank-core'
+import { DaytonaAdapter } from '@douglas-agent/sandbank-daytona'
 
 const provider = createProvider(
   new DaytonaAdapter({ apiKey: process.env.DAYTONA_API_KEY! })

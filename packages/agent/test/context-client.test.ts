@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import type { Transport } from '@sandbank.dev/core'
+import type { Transport } from '@douglas-agent/sandbank-core'
 import { RpcPendingMap } from '../src/rpc.js'
 import { createWsContextClient } from '../src/context-client.js'
 

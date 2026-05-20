@@ -1,4 +1,4 @@
-import type { SkillDefinition } from '@sandbank.dev/core'
+import type { SkillDefinition } from '@douglas-agent/sandbank-core'
 
 export const BRAIN_SKILL = `# brain — 共享记忆系统
 

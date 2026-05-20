@@ -1,5 +1,5 @@
 {
-  "name": "sandbank",
+  "name": "@douglas-agent/sandbank-cli",
   "version": "0.5.4",
   "description": "Unified sandbox SDK and CLI for AI agents — write once, run on any cloud",
   "license": "MIT",
@@ -43,8 +43,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@sandbank.dev/cloud": "workspace:*",
-    "@sandbank.dev/core": "workspace:*"
+    "@douglas-agent/sandbank-cloud": "workspace:*",
+    "@douglas-agent/sandbank-core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

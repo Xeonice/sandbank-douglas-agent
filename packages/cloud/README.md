@@ -1,4 +1,4 @@
-# @sandbank.dev/cloud
+# @douglas-agent/sandbank-cloud
 
 > Sandbank Cloud adapter for [Sandbank](../../README.md) with built-in x402 payment support.
 
@@ -7,7 +7,7 @@ Connect to [Sandbank Cloud](https://sandbank.dev/cloud) — managed bare-metal K
 ## Install
 
 ```bash
-pnpm add @sandbank.dev/core @sandbank.dev/cloud
+pnpm add @douglas-agent/sandbank-core @douglas-agent/sandbank-cloud
 ```
 
 ## Usage
@@ -15,8 +15,8 @@ pnpm add @sandbank.dev/core @sandbank.dev/cloud
 ### x402 Payment (pay-per-use)
 
 ```typescript
-import { createProvider } from '@sandbank.dev/core'
-import { SandbankCloudAdapter } from '@sandbank.dev/cloud'
+import { createProvider } from '@douglas-agent/sandbank-core'
+import { SandbankCloudAdapter } from '@douglas-agent/sandbank-cloud'
 
 const provider = createProvider(
   new SandbankCloudAdapter({

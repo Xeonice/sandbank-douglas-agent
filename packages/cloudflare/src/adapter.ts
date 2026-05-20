@@ -14,8 +14,8 @@ import type {
   TerminalOptions,
   VolumeConfig,
   VolumeInfo,
-} from '@sandbank.dev/core'
-import { SandboxNotFoundError, ProviderError } from '@sandbank.dev/core'
+} from '@douglas-agent/sandbank-core'
+import { SandboxNotFoundError, ProviderError } from '@douglas-agent/sandbank-core'
 import { getSandbox, type Sandbox as CloudflareSandbox, type DirectoryBackup } from '@cloudflare/sandbox'
 
 // --- Configuration ---

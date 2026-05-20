@@ -1,5 +1,5 @@
 {
-  "name": "@sandbank.dev/agent",
+  "name": "@douglas-agent/sandbank-agent",
   "version": "0.2.0",
   "description": "Lightweight client for AI agents running inside Sandbank sandboxes",
   "license": "MIT",
@@ -27,11 +27,11 @@
     "clean": "rm -rf dist"
   },
   "peerDependencies": {
-    "@sandbank.dev/core": "workspace:*"
+    "@douglas-agent/sandbank-core": "workspace:*"
   },
   "devDependencies": {
-    "@sandbank.dev/core": "workspace:*",
-    "@sandbank.dev/relay": "workspace:*",
+    "@douglas-agent/sandbank-core": "workspace:*",
+    "@douglas-agent/sandbank-relay": "workspace:*",
     "@types/node": "^22.15.0",
     "typescript": "^5.7.3",
     "ws": "^8.18.0",

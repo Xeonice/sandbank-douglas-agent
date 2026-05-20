@@ -3,9 +3,9 @@
  * Phase 1: 创建沙箱 (codebox:latest) → 运行 claude login → 输出 OAuth URL
  * 将 sandbox ID 写入 /tmp/sandbank-e2e-sandbox-id.txt 供 Phase 2 使用
  */
-import { createProvider } from '@sandbank.dev/core'
-import { startClaudeLogin } from '@sandbank.dev/core'
-import { BoxLiteAdapter } from '@sandbank.dev/boxlite'
+import { createProvider } from '@douglas-agent/sandbank-core'
+import { startClaudeLogin } from '@douglas-agent/sandbank-core'
+import { BoxLiteAdapter } from '@douglas-agent/sandbank-boxlite'
 import * as fs from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'

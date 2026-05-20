@@ -1,5 +1,5 @@
 {
-  "name": "@sandbank.dev/flyio",
+  "name": "@douglas-agent/sandbank-flyio",
   "version": "0.2.0",
   "description": "Fly.io Machines sandbox adapter for Sandbank",
   "license": "MIT",
@@ -24,7 +24,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@sandbank.dev/core": "workspace:*"
+    "@douglas-agent/sandbank-core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.3"

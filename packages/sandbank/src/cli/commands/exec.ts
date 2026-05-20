@@ -1,5 +1,5 @@
 import type { CliFlags } from '../auth.js'
-import type { CloudExecResult } from '@sandbank.dev/cloud'
+import type { CloudExecResult } from '@douglas-agent/sandbank-cloud'
 import { createApiClient, printJson } from '../api.js'
 
 export async function execCommand(args: string[], flags: CliFlags): Promise<void> {

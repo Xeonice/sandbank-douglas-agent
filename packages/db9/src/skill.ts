@@ -1,4 +1,4 @@
-import type { SkillDefinition } from '@sandbank.dev/core'
+import type { SkillDefinition } from '@douglas-agent/sandbank-core'
 
 const SKILL_URL = 'https://db9.ai/skill.md'
 const CACHE_TTL = 24 * 60 * 60 * 1000 // 24 hours

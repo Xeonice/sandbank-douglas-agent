@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createDb9Observer, EVENTS_SCHEMA } from '../src/db9-observer.js'
 import type { Db9Client } from '../src/client.js'
-import type { SandboxEvent } from '@sandbank.dev/core'
+import type { SandboxEvent } from '@douglas-agent/sandbank-core'
 
 function mockClient(): Db9Client {
   return {

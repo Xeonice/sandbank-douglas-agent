@@ -10,8 +10,8 @@
  *
  * 运行: pnpm exec tsx test/e2e-interactive.ts
  */
-import { BoxLiteAdapter } from '@sandbank.dev/boxlite'
-import { createProvider, startClaudeLogin, injectClaudeHooks, readHookEvents } from '@sandbank.dev/core'
+import { BoxLiteAdapter } from '@douglas-agent/sandbank-boxlite'
+import { createProvider, startClaudeLogin, injectClaudeHooks, readHookEvents } from '@douglas-agent/sandbank-core'
 import * as fs from 'node:fs'
 import { execSync } from 'node:child_process'
 import { resolve, dirname } from 'node:path'

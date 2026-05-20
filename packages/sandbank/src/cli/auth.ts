@@ -1,4 +1,4 @@
-import type { SandbankCloudConfig } from '@sandbank.dev/cloud'
+import type { SandbankCloudConfig } from '@douglas-agent/sandbank-cloud'
 import { loadCredentials } from './config.js'
 
 export interface CliFlags {

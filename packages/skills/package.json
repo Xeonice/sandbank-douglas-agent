@@ -1,5 +1,5 @@
 {
-  "name": "@sandbank.dev/skills",
+  "name": "@douglas-agent/sandbank-skills",
   "version": "0.2.0",
   "description": "Skill registry and loading for Sandbank agents",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@sandbank.dev/core": "workspace:*"
+    "@douglas-agent/sandbank-core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

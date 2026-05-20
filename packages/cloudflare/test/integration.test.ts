@@ -17,7 +17,7 @@ import {
   hasCapability,
   SandboxNotFoundError,
   ProviderError,
-} from '@sandbank.dev/core'
+} from '@douglas-agent/sandbank-core'
 
 // --- Stateful Sandbox Mock ---
 // Simulates a real CF Sandbox container: filesystem, env vars, exec, backup/restore

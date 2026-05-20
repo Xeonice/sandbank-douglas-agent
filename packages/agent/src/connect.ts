@@ -1,4 +1,4 @@
-import type { JsonRpcResponse, JsonRpcNotification } from '@sandbank.dev/core'
+import type { JsonRpcResponse, JsonRpcNotification } from '@douglas-agent/sandbank-core'
 import type { AgentSession, AgentMessage, ConnectOptions } from './types.js'
 import { createWebSocketTransport } from './transport.js'
 import { createRequest, RpcPendingMap } from './rpc.js'

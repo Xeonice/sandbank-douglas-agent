@@ -1,4 +1,4 @@
-# @sandbank.dev/relay
+# @douglas-agent/sandbank-relay
 
 > WebSocket relay server for multi-agent communication in [Sandbank](../../README.md).
 
@@ -7,15 +7,15 @@ Provides HTTP (long-polling) and WebSocket transport with JSON-RPC 2.0 protocol 
 ## Install
 
 ```bash
-pnpm add @sandbank.dev/relay
+pnpm add @douglas-agent/sandbank-relay
 ```
 
 ## Usage
 
-Usually used internally by `createSession()` from `@sandbank.dev/core`, but can be started standalone:
+Usually used internally by `createSession()` from `@douglas-agent/sandbank-core`, but can be started standalone:
 
 ```typescript
-import { startRelay } from '@sandbank.dev/relay'
+import { startRelay } from '@douglas-agent/sandbank-relay'
 
 const relay = await startRelay({ port: 4000 })
 console.log(relay.wsUrl) // ws://127.0.0.1:4000

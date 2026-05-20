@@ -1,12 +1,12 @@
 /**
  * sandbank — Unified sandbox SDK for AI agents
  *
- * This package re-exports everything from @sandbank.dev/core.
+ * This package re-exports everything from @douglas-agent/sandbank-core.
  * For provider adapters, install them separately:
  *
- *   pnpm add sandbank @sandbank.dev/daytona
- *   pnpm add sandbank @sandbank.dev/flyio
- *   pnpm add sandbank @sandbank.dev/cloudflare
- *   pnpm add sandbank @sandbank.dev/boxlite
+ *   pnpm add sandbank @douglas-agent/sandbank-daytona
+ *   pnpm add sandbank @douglas-agent/sandbank-flyio
+ *   pnpm add sandbank @douglas-agent/sandbank-cloudflare
+ *   pnpm add sandbank @douglas-agent/sandbank-boxlite
  */
-export * from '@sandbank.dev/core'
+export * from '@douglas-agent/sandbank-core'

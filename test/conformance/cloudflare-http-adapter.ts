@@ -15,7 +15,7 @@ import type {
   ListFilter,
   SandboxInfo,
   SandboxState,
-} from '@sandbank.dev/core'
+} from '@douglas-agent/sandbank-core'
 
 export interface CloudflareHttpAdapterConfig {
   workerUrl: string

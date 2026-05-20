@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import type { Transport } from '@sandbank.dev/core'
+import type { Transport } from '@douglas-agent/sandbank-core'
 
 // --- Mock transport module ---
 const mockListeners: Array<(data: string) => void> = []

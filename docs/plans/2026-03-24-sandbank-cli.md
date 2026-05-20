@@ -6,9 +6,9 @@
 
 ## 现有基础
 
-- `sandbank` 根包：re-export `@sandbank.dev/core`，已发布到 npm
-- `@sandbank.dev/cloud`：完整的 Cloud API 客户端，含 x402 支付签名
-- `@sandbank.dev/agent`：sandbox 内 agent CLI（send/recv/context）
+- `sandbank` 根包：re-export `@douglas-agent/sandbank-core`，已发布到 npm
+- `@douglas-agent/sandbank-cloud`：完整的 Cloud API 客户端，含 x402 支付签名
+- `@douglas-agent/sandbank-agent`：sandbox 内 agent CLI（send/recv/context）
 
 ## 架构
 
@@ -18,7 +18,7 @@ sandbank (npm 包)
 ├── dist/cli.js           ← CLI 入口（新增）
 └── package.json
     bin: { "sandbank": "dist/cli.js" }
-    dependencies: + @sandbank.dev/cloud
+    dependencies: + @douglas-agent/sandbank-cloud
 ```
 
 CLI 内部使用 `SandbankCloudAdapter`，不重新实现 API 客户端。
@@ -158,7 +158,7 @@ packages/sandbank/
 │           ├── login.ts
 │           ├── config.ts
 │           └── help.ts
-├── package.json              ← + bin, + @sandbank.dev/cloud dep
+├── package.json              ← + bin, + @douglas-agent/sandbank-cloud dep
 └── tsconfig.json
 ```
 
@@ -182,8 +182,8 @@ packages/sandbank/
 +   "build:compile": "bun build src/cli/index.ts --compile --outfile sandbank"
   },
   "dependencies": {
-    "@sandbank.dev/core": "workspace:*",
-+   "@sandbank.dev/cloud": "workspace:*"
+    "@douglas-agent/sandbank-core": "workspace:*",
++   "@douglas-agent/sandbank-cloud": "workspace:*"
   }
 }
 ```

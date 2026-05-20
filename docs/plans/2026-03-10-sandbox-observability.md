@@ -127,9 +127,9 @@ await brain.recall('auth.ts 相关的修改历史')
 
 ## Implementation Plan
 
-1. Define `SandboxObserver` interface in `@sandbank.dev/core`
+1. Define `SandboxObserver` interface in `@douglas-agent/sandbank-core`
 2. Wire observer into provider/session layer (auto-record exec/writeFile/readFile)
-3. Create `createDB9Observer()` in `@sandbank.dev/db9`
-4. Create `createWebhookObserver()` in `@sandbank.dev/core`
-5. Add hooks injection helper for Claude Code in `@sandbank.dev/agent`
+3. Create `createDB9Observer()` in `@douglas-agent/sandbank-db9`
+4. Create `createWebhookObserver()` in `@douglas-agent/sandbank-core`
+5. Add hooks injection helper for Claude Code in `@douglas-agent/sandbank-agent`
 6. Tests for each component

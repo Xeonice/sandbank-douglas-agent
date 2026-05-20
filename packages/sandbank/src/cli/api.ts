@@ -1,4 +1,4 @@
-import { createX402Fetch } from '@sandbank.dev/cloud'
+import { createX402Fetch } from '@douglas-agent/sandbank-cloud'
 import type { CliFlags } from './auth.js'
 import { resolveCloudConfig } from './auth.js'
 

@@ -1,4 +1,4 @@
-# @sandbank.dev/agent
+# @douglas-agent/sandbank-agent
 
 > Lightweight client for AI agents running inside [Sandbank](../../README.md) sandboxes.
 
@@ -7,7 +7,7 @@ Connects to the relay server via WebSocket, enabling messaging, shared context, 
 ## Install
 
 ```bash
-pnpm add @sandbank.dev/agent
+pnpm add @douglas-agent/sandbank-agent
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ pnpm add @sandbank.dev/agent
 Runs inside a sandbox. Connection parameters are read from `SANDBANK_*` environment variables injected by `createSession()`:
 
 ```typescript
-import { connect } from '@sandbank.dev/agent'
+import { connect } from '@douglas-agent/sandbank-agent'
 
 const session = await connect()
 

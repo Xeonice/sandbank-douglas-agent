@@ -1,18 +1,18 @@
-# @sandbank.dev/core
+# @douglas-agent/sandbank-core
 
 > Unified sandbox SDK for AI agents — provider abstraction, capability system, and error types.
 
 ## Install
 
 ```bash
-pnpm add @sandbank.dev/core
+pnpm add @douglas-agent/sandbank-core
 ```
 
 ## Usage
 
 ```typescript
-import { createProvider, withTerminal, connectTerminal } from '@sandbank.dev/core'
-import { DaytonaAdapter } from '@sandbank.dev/daytona'
+import { createProvider, withTerminal, connectTerminal } from '@douglas-agent/sandbank-core'
+import { DaytonaAdapter } from '@douglas-agent/sandbank-daytona'
 
 const provider = createProvider(
   new DaytonaAdapter({ apiKey: process.env.DAYTONA_API_KEY! })
@@ -58,7 +58,7 @@ Use `hasCapability(provider, name)` to check provider support, and `withTerminal
 ## Multi-Agent Sessions
 
 ```typescript
-import { createSession } from '@sandbank.dev/core'
+import { createSession } from '@douglas-agent/sandbank-core'
 
 const session = await createSession({ provider, relay: { type: 'memory' } })
 const agent = await session.spawn('worker', { image: 'node:22' })

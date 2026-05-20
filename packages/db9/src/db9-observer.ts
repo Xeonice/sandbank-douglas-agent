@@ -1,4 +1,4 @@
-import type { SandboxObserver, SandboxEvent } from '@sandbank.dev/core'
+import type { SandboxObserver, SandboxEvent } from '@douglas-agent/sandbank-core'
 import type { Db9Client } from './client.js'
 
 export const EVENTS_SCHEMA = `

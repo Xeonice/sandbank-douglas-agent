@@ -1,4 +1,4 @@
-import type { SkillDefinition } from '@sandbank.dev/core'
+import type { SkillDefinition } from '@douglas-agent/sandbank-core'
 
 export interface SkillSource {
   readonly name: string

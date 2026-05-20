@@ -1,5 +1,5 @@
 {
-  "name": "@sandbank.dev/cloud",
+  "name": "@douglas-agent/sandbank-cloud",
   "version": "0.2.0",
   "description": "Sandbank Cloud adapter with x402 payment support",
   "license": "MIT",
@@ -34,7 +34,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@sandbank.dev/core": "workspace:*",
+    "@douglas-agent/sandbank-core": "workspace:*",
     "@x402/core": "^2.6.0",
     "@x402/evm": "^2.6.0",
     "viem": "^2.0.0"

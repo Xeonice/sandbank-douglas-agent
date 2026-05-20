@@ -10,8 +10,8 @@ import type {
   SandboxState,
   TerminalInfo,
   TerminalOptions,
-} from '@sandbank.dev/core'
-import { SandboxNotFoundError, ProviderError } from '@sandbank.dev/core'
+} from '@douglas-agent/sandbank-core'
+import { SandboxNotFoundError, ProviderError } from '@douglas-agent/sandbank-core'
 import { createBoxLiteRestClient } from './client.js'
 import { createBoxLiteLocalClient } from './local-client.js'
 import type { BoxLiteAdapterConfig, BoxLiteBox, BoxLiteClient, BoxLiteNetworkConfig } from './types.js'

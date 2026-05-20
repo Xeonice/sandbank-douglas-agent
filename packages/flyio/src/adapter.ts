@@ -12,8 +12,8 @@ import type {
   TerminalOptions,
   VolumeConfig,
   VolumeInfo,
-} from '@sandbank.dev/core'
-import { SandboxNotFoundError, ProviderError } from '@sandbank.dev/core'
+} from '@douglas-agent/sandbank-core'
+import { SandboxNotFoundError, ProviderError } from '@douglas-agent/sandbank-core'
 import { createFlyioClient, type FlyioClient } from './client.js'
 import type { FlyioAdapterConfig, FlyioMachine } from './types.js'
 

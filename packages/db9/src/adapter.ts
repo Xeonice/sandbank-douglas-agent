@@ -1,4 +1,4 @@
-import type { ServiceConfig, ServiceInfo, SkillDefinition } from '@sandbank.dev/core'
+import type { ServiceConfig, ServiceInfo, SkillDefinition } from '@douglas-agent/sandbank-core'
 import { Db9Client, type Db9ClientConfig } from './client.js'
 import { fetchDb9Skill, db9SkillDefinition } from './skill.js'
 import type { Db9Database } from './types.js'

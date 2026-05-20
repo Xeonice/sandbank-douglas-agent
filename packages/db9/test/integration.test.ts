@@ -2,7 +2,7 @@
  * db9 集成测试 — 需要 DB9_TOKEN 环境变量。
  *
  * 运行方式：
- *   DB9_TOKEN=xxx pnpm --filter @sandbank.dev/db9 test:e2e
+ *   DB9_TOKEN=xxx pnpm --filter @douglas-agent/sandbank-db9 test:e2e
  */
 import { describe, it, expect, afterAll } from 'vitest'
 import { Db9ServiceAdapter } from '../src/adapter.js'

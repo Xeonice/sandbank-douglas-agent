@@ -1,4 +1,4 @@
-# @sandbank.dev/boxlite
+# @douglas-agent/sandbank-boxlite
 
 > BoxLite bare-metal micro-VM sandbox adapter for [Sandbank](../../README.md).
 
@@ -10,7 +10,7 @@ BoxLite provides lightweight micro-VMs using libkrun (Hypervisor.framework on ma
 ## Install
 
 ```bash
-pnpm add @sandbank.dev/core @sandbank.dev/boxlite
+pnpm add @douglas-agent/sandbank-core @douglas-agent/sandbank-boxlite
 ```
 
 For local mode, you also need the boxlite Python package:
@@ -24,8 +24,8 @@ pip install boxlite
 ### Remote mode (BoxRun REST API)
 
 ```typescript
-import { createProvider } from '@sandbank.dev/core'
-import { BoxLiteAdapter } from '@sandbank.dev/boxlite'
+import { createProvider } from '@douglas-agent/sandbank-core'
+import { BoxLiteAdapter } from '@douglas-agent/sandbank-boxlite'
 
 const provider = createProvider(
   new BoxLiteAdapter({
@@ -47,8 +47,8 @@ await provider.destroy(sandbox.id)
 ### Local mode (Python SDK)
 
 ```typescript
-import { createProvider } from '@sandbank.dev/core'
-import { BoxLiteAdapter } from '@sandbank.dev/boxlite'
+import { createProvider } from '@douglas-agent/sandbank-core'
+import { BoxLiteAdapter } from '@douglas-agent/sandbank-boxlite'
 
 const provider = createProvider(
   new BoxLiteAdapter({

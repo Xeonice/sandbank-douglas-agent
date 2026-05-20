@@ -1,4 +1,4 @@
-# @sandbank.dev/flyio
+# @douglas-agent/sandbank-flyio
 
 > Fly.io Machines sandbox adapter for [Sandbank](../../README.md).
 
@@ -7,14 +7,14 @@ Zero external SDK dependencies — uses the Fly.io Machines REST API directly vi
 ## Install
 
 ```bash
-pnpm add @sandbank.dev/core @sandbank.dev/flyio
+pnpm add @douglas-agent/sandbank-core @douglas-agent/sandbank-flyio
 ```
 
 ## Usage
 
 ```typescript
-import { createProvider } from '@sandbank.dev/core'
-import { FlyioAdapter } from '@sandbank.dev/flyio'
+import { createProvider } from '@douglas-agent/sandbank-core'
+import { FlyioAdapter } from '@douglas-agent/sandbank-flyio'
 
 const provider = createProvider(
   new FlyioAdapter({

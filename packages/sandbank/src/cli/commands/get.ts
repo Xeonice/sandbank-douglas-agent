@@ -1,5 +1,5 @@
 import type { CliFlags } from '../auth.js'
-import type { CloudBox } from '@sandbank.dev/cloud'
+import type { CloudBox } from '@douglas-agent/sandbank-cloud'
 import { createApiClient, printJson } from '../api.js'
 
 export async function getCommand(args: string[], flags: CliFlags): Promise<void> {

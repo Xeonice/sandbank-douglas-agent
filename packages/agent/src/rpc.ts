@@ -1,4 +1,4 @@
-import type { JsonRpcRequest, JsonRpcResponse } from '@sandbank.dev/core'
+import type { JsonRpcRequest, JsonRpcResponse } from '@douglas-agent/sandbank-core'
 
 export function createRequest(method: string, params?: Record<string, unknown>): JsonRpcRequest {
   return {

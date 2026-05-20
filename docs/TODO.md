@@ -35,7 +35,7 @@
 - [x] Core ServiceProvider 接口（ServiceConfig / ServiceInfo / ServiceBinding）
 - [x] `withServices()` 能力检测
 - [x] `create()` 自动注入 service 凭证到环境变量
-- [x] `@sandbank.dev/db9` — db9.ai 适配器（REST API 客户端 + skill 注入）
+- [x] `@douglas-agent/sandbank-db9` — db9.ai 适配器（REST API 客户端 + skill 注入）
 - [x] Brain schema（memory / tasks / artifacts）+ brain skill
 - [x] `createDb9Service` / `createDb9Brain` 便捷函数
 - [ ] 集成测试 — 需 DB9_TOKEN 验证真实 API
