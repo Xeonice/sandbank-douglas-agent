@@ -113,6 +113,14 @@ export interface Sandbox {
   /** 非 root 用户信息（如已配置） */
   readonly user?: SandboxUserInfo
 
+  /**
+   * Subscribe to the sandbox's combined stdout + stderr stream of its
+   * primary process. Optional — only available when the adapter implements
+   * `AdapterSandbox.streamLogs`. Used by the task-runner event broker
+   * (add-microsandbox-private-fallback D9-D12).
+   */
+  streamLogs?(): Promise<ReadableStream<Uint8Array>>
+
   /** 执行命令，等待完成 */
   exec(command: string, options?: ExecOptions): Promise<ExecResult>
 
@@ -318,6 +326,26 @@ export interface AdapterSandbox {
 
   // 可选能力
   execStream?(command: string, options?: ExecOptions): Promise<ReadableStream<Uint8Array>>
+  /**
+   * Subscribe to the sandbox's combined stdout + stderr stream of its
+   * primary process (image ENTRYPOINT / init), ordered by host capture
+   * timestamp. The returned ReadableStream closes naturally when the
+   * sandbox terminates.
+   *
+   * Used by the task-runner event broker: the task-runner image emits
+   * JSON Lines events to its own stdout, and the dispatcher subscribes
+   * here to consume them — eliminating the need for the dev box to
+   * accept inbound HTTP callbacks (see openspec-agent-platform
+   * docs/spikes/s14-event-broker-design.md).
+   *
+   * Adapter implementations:
+   *   - dockerode container.logs({ follow: true, stdout, stderr })
+   *   - boxlite serve GET /v1/{prefix}/sandboxes/:id/logs/stream
+   *   - E2B protocol GET /sandboxes/:id/logs/stream
+   *   - Fly Machines REST GET /v1/apps/:name/machines/:id/logs?follow=1
+   *   - Microsandbox shim GET /v1/sandboxes/:id/logs (SSE base64-framed)
+   */
+  streamLogs?(): Promise<ReadableStream<Uint8Array>>
   sleep?(): Promise<void>
   wake?(): Promise<void>
   startTerminal?(options?: TerminalOptions): Promise<TerminalInfo>

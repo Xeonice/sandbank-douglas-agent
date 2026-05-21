@@ -336,4 +336,58 @@ class AIOAdapterSandbox implements AdapterSandbox {
     const result = (await (this.client as unknown as { file?: { read?: (req: unknown) => Promise<unknown> } }).file?.read?.({ path })) as { content?: string } | undefined;
     return new TextEncoder().encode(result?.content ?? '');
   }
+
+  /**
+   * Subscribe to the container's combined stdout + stderr via dockerode
+   * `container.logs({ follow: true })`. Used by the task-runner event broker
+   * (openspec-agent-platform add-microsandbox-private-fallback D9-D12).
+   *
+   * dockerode returns a Node `Readable` of Docker's multiplexed stdcopy
+   * frames when the container is started without a TTY. We strip the 8-byte
+   * frame headers in-place so consumers see clean stdout/stderr bytes.
+   */
+  async streamLogs(): Promise<ReadableStream<Uint8Array>> {
+    const container = this.docker.getContainer(this.id);
+    let logStream: NodeJS.ReadableStream;
+    try {
+      logStream = await container.logs({
+        follow: true,
+        stdout: true,
+        stderr: true,
+        timestamps: false,
+      }) as unknown as NodeJS.ReadableStream;
+    } catch (e) {
+      if ((e as { statusCode?: number }).statusCode === 404) {
+        throw new SandboxNotFoundError('aio', this.id);
+      }
+      throw new ProviderError('aio', e, this.id);
+    }
+
+    return new ReadableStream<Uint8Array>({
+      start(controller) {
+        // Docker logs stream uses 8-byte stdcopy framing when no TTY:
+        //   [type][0][0][0][len(u32be)][payload...]
+        // type: 0=stdin (n/a), 1=stdout, 2=stderr. We forward stdout+stderr
+        // bytes verbatim to the controller; consumers (the broker) only care
+        // about the payload, not stream identity.
+        let buf = Buffer.alloc(0);
+
+        logStream.on('data', (chunk: Buffer) => {
+          buf = Buffer.concat([buf, chunk]);
+          while (buf.length >= 8) {
+            const payloadLen = buf.readUInt32BE(4);
+            if (buf.length < 8 + payloadLen) break;
+            const payload = buf.subarray(8, 8 + payloadLen);
+            controller.enqueue(new Uint8Array(payload));
+            buf = buf.subarray(8 + payloadLen);
+          }
+        });
+        logStream.on('end', () => controller.close());
+        logStream.on('error', (err) => controller.error(err));
+      },
+      cancel() {
+        (logStream as unknown as { destroy?: () => void }).destroy?.();
+      },
+    });
+  }
 }

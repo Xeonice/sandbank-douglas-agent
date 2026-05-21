@@ -103,6 +103,9 @@ function wrapSandbox(
   if (raw.execStream) {
     sandbox['execStream'] = raw.execStream.bind(raw)
   }
+  if (raw.streamLogs) {
+    sandbox['streamLogs'] = raw.streamLogs.bind(raw)
+  }
   if (raw.sleep) {
     sandbox['sleep'] = raw.sleep.bind(raw)
   }

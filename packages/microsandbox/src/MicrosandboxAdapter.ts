@@ -165,8 +165,84 @@ export class MicrosandboxAdapter implements SandboxAdapter {
       execStream(command: string, opts?: ExecOptions): Promise<ReadableStream<Uint8Array>> {
         return adapter.openExecStream(info.id, command, opts);
       },
+
+      streamLogs(): Promise<ReadableStream<Uint8Array>> {
+        return adapter.openLogsStream(info.id);
+      },
     };
     return handle;
+  }
+
+  /**
+   * Subscribe to a sandbox's combined stdout + stderr stream via the shim's
+   * `GET /v1/sandboxes/:id/logs` SSE endpoint. Used by the broker to read
+   * task-runner JSON Lines events without requiring the dev box to accept
+   * inbound HTTP callbacks.
+   *
+   * SSE wire format (from the shim):
+   *   data: {"b64":"<base64 bytes>"}\n\n
+   *
+   * Returns a ReadableStream<Uint8Array> of the decoded raw bytes, ordered
+   * by host capture timestamp.
+   */
+  private async openLogsStream(sandboxId: string): Promise<ReadableStream<Uint8Array>> {
+    const res = await this.fetchImpl(`${this.apiUrl}/v1/sandboxes/${sandboxId}/logs`, {
+      method: 'GET',
+      headers: this.authHeaders(),
+    });
+    if (res.status === 404) throw new SandboxNotFoundError('microsandbox', sandboxId);
+    if (!res.ok) {
+      const detail = await res.text().catch(() => '');
+      throw new ProviderError(
+        'microsandbox',
+        new Error(`shim streamLogs → ${res.status}: ${detail}`),
+        sandboxId,
+      );
+    }
+    if (!res.body) {
+      throw new ProviderError(
+        'microsandbox',
+        new Error('shim streamLogs returned no body'),
+        sandboxId,
+      );
+    }
+
+    const sourceReader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '';
+
+    return new ReadableStream<Uint8Array>({
+      async pull(controller) {
+        for (;;) {
+          const { value, done } = await sourceReader.read();
+          if (done) {
+            controller.close();
+            return;
+          }
+          buf += decoder.decode(value, { stream: true });
+          let idx;
+          while ((idx = buf.indexOf('\n\n')) !== -1) {
+            const block = buf.slice(0, idx);
+            buf = buf.slice(idx + 2);
+            const dataLine = block.split('\n').find((l) => l.startsWith('data: '));
+            if (!dataLine) continue;
+            try {
+              const parsed = JSON.parse(dataLine.slice(6)) as { b64?: string };
+              if (typeof parsed.b64 === 'string') {
+                const bytes = Uint8Array.from(Buffer.from(parsed.b64, 'base64'));
+                controller.enqueue(bytes);
+              }
+            } catch {
+              // ignore malformed event
+            }
+          }
+          return;
+        }
+      },
+      cancel() {
+        sourceReader.cancel().catch(() => {});
+      },
+    });
   }
 
   private async openExecStream(

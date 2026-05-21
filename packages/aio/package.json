@@ -1,6 +1,6 @@
 {
   "name": "@douglas-agent/sandbank-aio",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "AIO Sandbox adapter (字节 agent-infra/sandbox) for Sandbank — dockerode lifecycle + @agent-infra/sandbox SDK for in-container ops",
   "license": "MIT",
   "type": "module",

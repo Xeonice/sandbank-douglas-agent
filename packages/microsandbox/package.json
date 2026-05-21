@@ -1,6 +1,6 @@
 {
   "name": "@douglas-agent/sandbank-microsandbox",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Microsandbox adapter for Sandbank — talks to a remote microsandbox-shim service over HTTP, lets the main API drive μVMs running on a Linux host without depending on KVM in the main API process",
   "license": "MIT",
   "type": "module",
@@ -24,7 +24,9 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
@@ -35,6 +37,7 @@
     "@douglas-agent/sandbank-core": "workspace:*"
   },
   "devDependencies": {
+    "@types/node": "^22.10.5",
     "typescript": "^5.7.3",
     "vitest": "^2.1.8"
   }
