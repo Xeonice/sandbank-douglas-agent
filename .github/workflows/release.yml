@@ -67,58 +67,160 @@ jobs:
 
       # Layer 1: no internal deps
       - name: Publish @douglas-agent/sandbank-core
-        run: npm publish --provenance --access public
+        run: |
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "::notice::Skip — $PKG@$VER already published"
+            exit 0
+          fi
+          npm publish --provenance --access public
         working-directory: packages/core
 
       - name: Publish @douglas-agent/sandbank-relay
-        run: npm publish --provenance --access public
+        run: |
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "::notice::Skip — $PKG@$VER already published"
+            exit 0
+          fi
+          npm publish --provenance --access public
         working-directory: packages/relay
 
       # Layer 2: depend on core
       - name: Publish @douglas-agent/sandbank-agent
-        run: npm publish --provenance --access public
+        run: |
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "::notice::Skip — $PKG@$VER already published"
+            exit 0
+          fi
+          npm publish --provenance --access public
         working-directory: packages/agent
 
       - name: Publish @douglas-agent/sandbank-skills
-        run: npm publish --provenance --access public
+        run: |
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "::notice::Skip — $PKG@$VER already published"
+            exit 0
+          fi
+          npm publish --provenance --access public
         working-directory: packages/skills
 
       - name: Publish @douglas-agent/sandbank-daytona
-        run: npm publish --provenance --access public
+        run: |
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "::notice::Skip — $PKG@$VER already published"
+            exit 0
+          fi
+          npm publish --provenance --access public
         working-directory: packages/daytona
 
       - name: Publish @douglas-agent/sandbank-flyio
-        run: npm publish --provenance --access public
+        run: |
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "::notice::Skip — $PKG@$VER already published"
+            exit 0
+          fi
+          npm publish --provenance --access public
         working-directory: packages/flyio
 
       - name: Publish @douglas-agent/sandbank-cloud
-        run: npm publish --provenance --access public
+        run: |
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "::notice::Skip — $PKG@$VER already published"
+            exit 0
+          fi
+          npm publish --provenance --access public
         working-directory: packages/cloud
 
       - name: Publish @douglas-agent/sandbank-cloudflare
-        run: npm publish --provenance --access public
+        run: |
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "::notice::Skip — $PKG@$VER already published"
+            exit 0
+          fi
+          npm publish --provenance --access public
         working-directory: packages/cloudflare
 
       - name: Publish @douglas-agent/sandbank-boxlite
-        run: npm publish --provenance --access public
+        run: |
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "::notice::Skip — $PKG@$VER already published"
+            exit 0
+          fi
+          npm publish --provenance --access public
         working-directory: packages/boxlite
 
       - name: Publish @douglas-agent/sandbank-db9
-        run: npm publish --provenance --access public
+        run: |
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "::notice::Skip — $PKG@$VER already published"
+            exit 0
+          fi
+          npm publish --provenance --access public
         working-directory: packages/db9
 
       # New adapters (this fork)
       - name: Publish @douglas-agent/sandbank-aio
-        run: npm publish --provenance --access public
+        run: |
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "::notice::Skip — $PKG@$VER already published"
+            exit 0
+          fi
+          npm publish --provenance --access public
         working-directory: packages/aio
 
       - name: Publish @douglas-agent/sandbank-e2b
-        run: npm publish --provenance --access public
+        run: |
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "::notice::Skip — $PKG@$VER already published"
+            exit 0
+          fi
+          npm publish --provenance --access public
         working-directory: packages/e2b
+
+      - name: Publish @douglas-agent/sandbank-microsandbox
+        run: |
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "::notice::Skip — $PKG@$VER already published"
+            exit 0
+          fi
+          npm publish --provenance --access public
+        working-directory: packages/microsandbox
 
       # Layer 3: main package (CLI + meta)
       - name: Publish @douglas-agent/sandbank-cli
-        run: npm publish --provenance --access public
+        run: |
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "::notice::Skip — $PKG@$VER already published"
+            exit 0
+          fi
+          npm publish --provenance --access public
         working-directory: packages/sandbank
 
       - name: Create GitHub Release
