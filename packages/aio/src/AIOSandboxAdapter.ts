@@ -62,6 +62,7 @@ export class AIOSandboxAdapter implements SandboxAdapter {
   private readonly image: string;
   private readonly portRange: [number, number];
   private readonly healthTimeoutSec: number;
+  private readonly readinessProbePath?: string;
   private readonly apiKey?: string;
 
   constructor(cfg: AIOSandboxAdapterConfig = {}) {
@@ -75,6 +76,7 @@ export class AIOSandboxAdapter implements SandboxAdapter {
     this.image = cfg.image ?? DEFAULT_IMAGE;
     this.portRange = cfg.portRange ?? DEFAULT_PORT_RANGE;
     this.healthTimeoutSec = cfg.healthTimeoutSec ?? DEFAULT_HEALTH_TIMEOUT_SEC;
+    this.readinessProbePath = cfg.readinessProbe?.path;
     this.apiKey = cfg.apiKey;
   }
 
@@ -107,9 +109,14 @@ export class AIOSandboxAdapter implements SandboxAdapter {
     }
 
     const baseUrl = `http://localhost:${port}`;
-    await this.waitHealth(baseUrl);
+    if (this.readinessProbePath) {
+      await this.waitHealth(baseUrl);
+    }
+    // If no readinessProbe configured, container.start() already returned —
+    // dockerode resolves once the container is in 'running' state. Caller
+    // (e.g. task-runner image) is expected to bootstrap via its own entrypoint.
 
-    const client = this.makeClient(baseUrl);
+    const client = this.readinessProbePath ? this.makeClient(baseUrl) : undefined;
     const createdAt = new Date().toISOString();
     return this.wrap(container.id, baseUrl, client, 'running', createdAt);
   }
@@ -231,18 +238,23 @@ export class AIOSandboxAdapter implements SandboxAdapter {
   }
 
   /**
-   * Poll the sandbox HTTP API until ready.
+   * Poll the configured readiness probe path until 200 (or timeout).
    *
-   * AIO Sandbox does NOT expose `/health` — its readiness endpoint is
-   * `GET /v1/sandbox` which returns environment info JSON. Verified
-   * 2026-05-20 against ghcr.io/agent-infra/sandbox@1.0.16.
+   * Only invoked when `readinessProbe` is configured. For task-runner-style
+   * images that self-bootstrap via container entrypoint + HTTPS callback,
+   * leave `readinessProbe` undefined.
+   *
+   * Example: AIO Sandbox image (`ghcr.io/agent-infra/sandbox:latest`)
+   * exposes `/v1/sandbox` returning environment info JSON. Verified
+   * 2026-05-20 against version 1.0.16.
    */
   private async waitHealth(baseUrl: string): Promise<void> {
+    const path = this.readinessProbePath!;
     const deadline = Date.now() + this.healthTimeoutSec * 1000;
     let lastErr: unknown;
     while (Date.now() < deadline) {
       try {
-        const res = await fetch(`${baseUrl}/v1/sandbox`, { method: 'GET' });
+        const res = await fetch(`${baseUrl}${path}`, { method: 'GET' });
         if (res.ok) return;
         lastErr = new Error(`HTTP ${res.status}`);
       } catch (e) {
@@ -252,7 +264,7 @@ export class AIOSandboxAdapter implements SandboxAdapter {
     }
     throw new ProviderError(
       'aio',
-      new Error(`/v1/sandbox did not become ready within ${this.healthTimeoutSec}s: ${(lastErr as Error)?.message ?? 'unknown'}`)
+      new Error(`${path} did not become ready within ${this.healthTimeoutSec}s: ${(lastErr as Error)?.message ?? 'unknown'}`)
     );
   }
 

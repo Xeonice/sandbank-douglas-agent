@@ -11,12 +11,19 @@ const inspectMock = vi.fn();
 const removeMock = vi.fn();
 const listContainersMock = vi.fn();
 const getContainerMock = vi.fn();
+const getImageMock = vi.fn();
+const imageInspectMock = vi.fn();
+const pullMock = vi.fn();
+const followProgressMock = vi.fn();
 
 vi.mock('dockerode', () => {
   class MockDocker {
     createContainer = createContainerMock;
     listContainers = listContainersMock;
     getContainer = getContainerMock;
+    getImage = getImageMock;
+    pull = pullMock;
+    modem = { followProgress: followProgressMock };
   }
   return { default: MockDocker };
 });
@@ -37,6 +44,8 @@ beforeEach(() => {
     inspect: inspectMock,
     remove: removeMock,
   }));
+  // Default: image already cached → ensureImage no-ops
+  getImageMock.mockReturnValue({ inspect: imageInspectMock.mockResolvedValue({}) });
 });
 
 afterEach(() => {
@@ -64,12 +73,9 @@ describe('AIOSandboxAdapter', () => {
   });
 
   describe('createSandbox', () => {
-    it('runs docker container and waits for /health', async () => {
-      globalThis.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);
-
+    it('runs docker container without HTTP probe by default (task-runner mode)', async () => {
       const a = new AIOSandboxAdapter({
         portRange: [54321, 54321],
-        healthTimeoutSec: 5,
       });
       const sandbox = await a.createSandbox({ env: { FOO: 'bar' } });
 
@@ -87,20 +93,28 @@ describe('AIOSandboxAdapter', () => {
         })
       );
       expect(startMock).toHaveBeenCalled();
-      expect(globalThis.fetch).toHaveBeenCalledWith(
-        expect.stringMatching(/^http:\/\/localhost:\d+\/health$/),
-        expect.any(Object)
-      );
       expect(sandbox.id).toBe('cnt-test-1');
       expect(sandbox.state).toBe('running');
     });
 
-    it('wraps custom image when CreateConfig.image provided', async () => {
+    it('polls readinessProbe when configured (AIO Sandbox mode)', async () => {
       globalThis.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);
 
       const a = new AIOSandboxAdapter({
-        portRange: [54322, 54322],
+        portRange: [54330, 54330],
+        readinessProbe: { path: '/v1/sandbox' },
         healthTimeoutSec: 5,
+      });
+      await a.createSandbox({});
+      expect(globalThis.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(/^http:\/\/localhost:\d+\/v1\/sandbox$/),
+        expect.any(Object)
+      );
+    });
+
+    it('wraps custom image when CreateConfig.image provided', async () => {
+      const a = new AIOSandboxAdapter({
+        portRange: [54322, 54322],
       });
       await a.createSandbox({ image: 'custom/aio:dev' });
       expect(createContainerMock).toHaveBeenCalledWith(

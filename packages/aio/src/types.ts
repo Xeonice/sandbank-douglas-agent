@@ -35,10 +35,28 @@ export interface AIOSandboxAdapterConfig {
   portRange?: [number, number];
 
   /**
-   * Max seconds to wait for sandbox /health to respond 200 after `docker start`.
+   * Max seconds to wait for readiness probe after `docker start`.
+   * Only relevant when `readinessProbe` is set.
    * @default 60
    */
   healthTimeoutSec?: number;
+
+  /**
+   * Optional HTTP readiness probe path.
+   *
+   * When set, `createSandbox` polls `GET http://<baseUrl>/<path>` until 200
+   * (or timeout). When undefined (default), no HTTP probe — only wait for
+   * the container to reach 'running' state.
+   *
+   * Use cases:
+   *  - AIO Sandbox image: set `{ path: '/v1/sandbox' }`
+   *  - Generic image (task-runner self-bootstrap): leave undefined
+   *
+   * @default undefined (no HTTP probe)
+   */
+  readinessProbe?: {
+    path: string;
+  };
 
   /**
    * Optional API key forwarded to SandboxClient via `X-API-Key` header.
