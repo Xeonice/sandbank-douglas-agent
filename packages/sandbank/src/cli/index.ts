@@ -11,6 +11,8 @@ import { cloneCommand } from './commands/clone.js'
 import { keepCommand } from './commands/keep.js'
 import { addonsCommand } from './commands/addons.js'
 import { snapshotCommand } from './commands/snapshot.js'
+import { workspaceCommand } from './commands/workspace.js'
+import { harnessApiCommand } from './commands/harness-api.js'
 import { helpCommand } from './commands/help.js'
 import type { CliFlags } from './auth.js'
 
@@ -68,6 +70,9 @@ export async function dispatch(args: string[]): Promise<void> {
     case 'keep':     return keepCommand(args, flags)
     case 'addons':   return addonsCommand(args, flags)
     case 'snapshot': return snapshotCommand(args, flags)
+    case 'workspace': return workspaceCommand(args, flags)
+    case 'harness-api': return harnessApiCommand(args, flags)
+    case 'db-native-harness': return harnessApiCommand(args, flags)
     case 'help':     return helpCommand()
     default:
       console.error(`Unknown command: ${command}`)
