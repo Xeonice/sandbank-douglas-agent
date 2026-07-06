@@ -182,7 +182,7 @@ await runWorkspaceSandboxTask({
 | Fly.io | `FLY_API_TOKEN`、`FLY_APP_NAME`。任意で `FLY_REGION` |
 | Cloudflare | `env.SANDBOX` などの Worker Durable Object binding。volume には任意の storage config |
 | BoxLite remote | `BOXLITE_API_URL` と、`BOXLITE_API_TOKEN` または OAuth2 client credentials |
-| BoxLite local | ローカルの `boxlite` Python package。任意で `pythonPath` と `boxliteHome` |
+| BoxLite local | 公式 `@boxlite-ai/boxlite` Node.js SDK。任意で `boxliteHome` |
 | E2B | `E2B_API_KEY`。論理イメージは E2B template にマップされます |
 
 ## イメージ要件

@@ -182,7 +182,7 @@ await runWorkspaceSandboxTask({
 | Fly.io | `FLY_API_TOKEN`、`FLY_APP_NAME`；可选 `FLY_REGION` |
 | Cloudflare | Worker Durable Object binding，例如 `env.SANDBOX`；volume 需要可选 storage config |
 | BoxLite remote | `BOXLITE_API_URL`，以及 `BOXLITE_API_TOKEN` 或 OAuth2 client credentials |
-| BoxLite local | 本机 `boxlite` Python package；可选 `pythonPath` 和 `boxliteHome` |
+| BoxLite local | 官方 `@boxlite-ai/boxlite` Node.js SDK；可选 `boxliteHome` |
 | E2B | `E2B_API_KEY`；逻辑镜像映射到 E2B template |
 
 ## 镜像要求

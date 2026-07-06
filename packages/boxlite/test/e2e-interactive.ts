@@ -27,7 +27,6 @@ try {
 } catch {}
 
 const HOST_CODE_FILE = '/tmp/sandbank-host-auth-code'
-const PYTHON_PATH = process.env['PYTHON_PATH'] ?? '/tmp/boxlite-venv/bin/python3'
 const BOXLITE_HOME = process.env['BOXLITE_HOME'] ?? '/tmp/sandbank-e2e-boxlite'
 const SANDBOX_IMAGE = process.env['SANDBOX_IMAGE'] ?? 'codebox:latest'
 // 跳过 Phase 2（仅测试登录）
@@ -54,7 +53,7 @@ async function main() {
   // 清理上次的 code 文件
   fs.rmSync(HOST_CODE_FILE, { force: true })
 
-  const adapter = new BoxLiteAdapter({ mode: 'local', pythonPath: PYTHON_PATH, boxliteHome: BOXLITE_HOME })
+  const adapter = new BoxLiteAdapter({ mode: 'local', boxliteHome: BOXLITE_HOME })
   const provider = createProvider(adapter)
   let sandboxId: string | undefined
 

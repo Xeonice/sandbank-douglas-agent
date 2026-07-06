@@ -1,6 +1,6 @@
 {
   "name": "@sandbank.dev/boxlite",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "BoxLite bare-metal sandbox adapter for Sandbank",
   "license": "MIT",
   "type": "module",
@@ -32,6 +32,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@boxlite-ai/boxlite": "^0.9.7",
     "@sandbank.dev/core": "workspace:*"
   },
   "devDependencies": {

@@ -2,6 +2,8 @@
 
 BoxLite 是一个嵌入式微虚拟机运行时，使用 libkrun（基于 KVM/Hypervisor.framework）在硬件隔离的 VM 中运行 OCI 容器。BoxRun 是其 CLI 管理层，提供 REST API。
 
+> 当前 Sandbank JS SDK 的 local 模式使用官方 `@boxlite-ai/boxlite` Node.js SDK。本文中关于 `boxlite` Python 库和 BoxRun v0.3.0 的内容主要是历史排障背景，用于理解旧版本兼容性问题。
+
 ## 平台支持
 
 | 平台 | 状态 | 虚拟化后端 |
@@ -14,7 +16,18 @@ BoxLite 是一个嵌入式微虚拟机运行时，使用 libkrun（基于 KVM/Hy
 
 ## 安装
 
-### BoxLite Python 库
+### BoxLite Node.js SDK
+
+Sandbank 的 `@sandbank.dev/boxlite` local 模式会通过 `@boxlite-ai/boxlite` 直接调用官方 Node.js SDK，不需要再配置 Python venv：
+
+```typescript
+new BoxLiteAdapter({
+  mode: 'local',
+  boxliteHome: '~/.boxlite',
+})
+```
+
+### BoxLite Python 库（历史排障）
 
 ```bash
 # 需要 Python 3.10+
@@ -108,7 +121,7 @@ EOF
 chmod +x ~/.boxrun/runtime/boxlite-shim
 ```
 
-**解决方案（macOS）：** BoxRun v0.3.0 在 macOS 上还有额外问题（jailer 被禁用），wrapper shim 不够。建议直接使用 boxlite Python 库：
+**解决方案（macOS）：** BoxRun v0.3.0 在 macOS 上还有额外问题（jailer 被禁用），wrapper shim 不够。当前 JS SDK 建议使用 `@sandbank.dev/boxlite` local 模式；旧版排障也可以直接使用 boxlite Python 库验证底层 runtime：
 
 ```python
 import boxlite, asyncio
@@ -136,7 +149,7 @@ BoxRun v0.3.0 在 macOS 上不启用 seatbelt sandbox，而 boxlite v0.6.0 需�
 | Guest rootfs | 直接引用 image disk | Reflink + version key 管理 |
 | 结果 | ❌ Timeout | ✅ 正常启动 |
 
-**解决方案：** 在 macOS 上使用 boxlite Python 库而非 BoxRun。
+**解决方案：** 在 macOS 上使用官方 SDK（Sandbank JS local 模式或 Python 库）而非旧 BoxRun。
 
 #### 1c. Hypervisor entitlement 缺失
 
@@ -396,10 +409,11 @@ log stream --predicate 'eventMessage CONTAINS "Sandbox:" AND eventMessage CONTAI
 
 ## 版本兼容性矩阵
 
-| BoxRun | boxlite (Python) | boxlite-shim | DB Schema | 兼容性 |
-|--------|------------------|--------------|-----------|--------|
+| BoxRun | SDK | boxlite-shim | DB Schema | 兼容性 |
+|--------|-----|--------------|-----------|--------|
 | v0.3.0 | — | v0.5.10 | v4 | ✅ (Linux/WSL2 only) |
-| v0.3.0 | v0.6.0 | v0.6.0 | v4 vs v6 ❌ | ❌ 不兼容 |
-| — | v0.6.0 | v0.6.0 | v6 | ✅ (Python 直接使用) |
+| v0.3.0 | Python v0.6.0 | v0.6.0 | v4 vs v6 ❌ | ❌ 不兼容 |
+| — | Python v0.6.0 | v0.6.0 | v6 | ✅ (Python 直接使用) |
+| — | Node.js `@boxlite-ai/boxlite` v0.9.7 | v0.9.7 | current | ✅ (Sandbank JS local mode) |
 
-**建议：** 在 BoxRun 更新到兼容 v0.6.0 之前，macOS 上优先使用 boxlite Python 库直接操作 VM。
+**建议：** Sandbank JS SDK 优先使用 local Node.js SDK 路径；只有在排查旧 BoxRun 或 Python 调用方时才使用 Python 库。

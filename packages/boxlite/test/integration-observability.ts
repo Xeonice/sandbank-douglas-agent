@@ -42,12 +42,11 @@ async function main() {
     process.exit(1)
   }
 
-  const pythonPath = process.env['PYTHON_PATH'] ?? '/tmp/boxlite-venv/bin/python3'
   const boxliteHome = process.env['BOXLITE_HOME'] ?? '/tmp/sandbank-test-boxlite'
 
-  log('INIT', `BoxLite local mode (python: ${pythonPath}, home: ${boxliteHome})`)
+  log('INIT', `BoxLite local mode (home: ${boxliteHome})`)
 
-  const adapter = new BoxLiteAdapter({ mode: 'local', pythonPath, boxliteHome })
+  const adapter = new BoxLiteAdapter({ mode: 'local', boxliteHome })
 
   const events: SandboxEvent[] = []
   const observer: SandboxObserver = {

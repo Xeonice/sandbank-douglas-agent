@@ -1,4 +1,4 @@
-// @sandbank.dev/boxlite — BoxLite sandbox adapter (remote REST API + local Python SDK)
+// @sandbank.dev/boxlite — BoxLite sandbox adapter (remote REST API + local Node.js SDK)
 export { BoxLiteAdapter } from './adapter.js'
 export type {
   BoxLiteAdapterConfig,

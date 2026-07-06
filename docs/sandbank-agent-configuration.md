@@ -182,7 +182,7 @@ await runWorkspaceSandboxTask({
 | Fly.io | `FLY_API_TOKEN`, `FLY_APP_NAME`; optional `FLY_REGION` |
 | Cloudflare | Worker Durable Object binding such as `env.SANDBOX`; optional storage config for volumes |
 | BoxLite remote | `BOXLITE_API_URL` plus `BOXLITE_API_TOKEN` or OAuth2 client credentials |
-| BoxLite local | local `boxlite` Python package; optional `pythonPath` and `boxliteHome` |
+| BoxLite local | official `@boxlite-ai/boxlite` Node.js SDK; optional `boxliteHome` |
 | E2B | `E2B_API_KEY`; logical images map to E2B templates |
 
 ## Image Requirements

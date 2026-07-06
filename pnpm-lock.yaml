@@ -48,6 +48,9 @@ importers:
 
   packages/boxlite:
     dependencies:
+      '@boxlite-ai/boxlite':
+        specifier: ^0.9.7
+        version: 0.9.7
       '@sandbank.dev/core':
         specifier: workspace:*
         version: link:../core
@@ -446,6 +449,33 @@ packages:
   '@bcoe/v8-coverage@1.0.2':
     resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
     engines: {node: '>=18'}
+
+  '@boxlite-ai/boxlite-darwin-arm64@0.9.7':
+    resolution: {integrity: sha512-a9Yh7RAB2qRJaYS6SIHszL6Dg7rY3XT0SDHmshm9RF604GpOv/yjm+6iqsjQPhAEnx229SJqCABXXHOkLoDpfw==}
+    engines: {node: '>=18.0.0'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@boxlite-ai/boxlite-linux-arm64-gnu@0.9.7':
+    resolution: {integrity: sha512-8fCL+vX4d0sW2t27oifswFbakJnHot9hhJ8D2aFvm0vyPMnPnGP1UqP/g7FL+7+zlhKNuafkMDqstLpDjHRA7w==}
+    engines: {node: '>=18.0.0'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@boxlite-ai/boxlite-linux-x64-gnu@0.9.7':
+    resolution: {integrity: sha512-4FtqDNKF63+JGDlxyILl9UyVX6xKzK5c0535ziv5ZU18LUBrgqFI3IGZQ8R9pCQ+g7sbcEVFMLG/f2DJJTtWaQ==}
+    engines: {node: '>=18.0.0'}
+    cpu: [x64]
+    os: [linux]
+
+  '@boxlite-ai/boxlite@0.9.7':
+    resolution: {integrity: sha512-Y/XdJV6c3U6EdesOE4w02wkwOWCvVyCM/ARhXsyM+JbfTl1AAxEFphUSvbV9IYpTEHsiQp2AYJBujl592h/cjg==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      playwright-core: '>=1.58.0'
+    peerDependenciesMeta:
+      playwright-core:
+        optional: true
 
   '@bufbuild/protobuf@2.12.0':
     resolution: {integrity: sha512-B/XlCaFIP8LOwzo+bz5uFzATYokcwCKQcghqnlfwSmM5eX/qTkvDBnDPs+gXtX/RyjxJ4DRikECcPJbyALA8FA==}
@@ -3099,6 +3129,21 @@ snapshots:
       '@babel/helper-validator-identifier': 7.28.5
 
   '@bcoe/v8-coverage@1.0.2': {}
+
+  '@boxlite-ai/boxlite-darwin-arm64@0.9.7':
+    optional: true
+
+  '@boxlite-ai/boxlite-linux-arm64-gnu@0.9.7':
+    optional: true
+
+  '@boxlite-ai/boxlite-linux-x64-gnu@0.9.7':
+    optional: true
+
+  '@boxlite-ai/boxlite@0.9.7':
+    optionalDependencies:
+      '@boxlite-ai/boxlite-darwin-arm64': 0.9.7
+      '@boxlite-ai/boxlite-linux-arm64-gnu': 0.9.7
+      '@boxlite-ai/boxlite-linux-x64-gnu': 0.9.7
 
   '@bufbuild/protobuf@2.12.0': {}
 
