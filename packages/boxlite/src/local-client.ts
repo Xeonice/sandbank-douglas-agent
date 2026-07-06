@@ -207,6 +207,18 @@ export function createBoxLiteLocalClient(config: BoxLiteLocalConfig): BoxLiteCli
     return fresh
   }
 
+  async function startCreatedBox(box: NativeBox): Promise<NativeBox> {
+    const status = normalizeStatus(box.info())
+    if (status === 'running') return box
+
+    if (status === 'configured' || status === 'stopped' || status === 'paused') {
+      await box.start()
+      return await refreshBox(box.id).catch(() => box)
+    }
+
+    return box
+  }
+
   async function startNativeExecution(boxId: string, req: BoxLiteExecRequest): Promise<NativeExecution> {
     const [command, ...args] = req.cmd
     if (!command) throw new Error('BoxLite exec requires a non-empty cmd array')
@@ -233,7 +245,7 @@ export function createBoxLiteLocalClient(config: BoxLiteLocalConfig): BoxLiteCli
 
   return {
     async createBox(params: BoxLiteCreateParams): Promise<BoxLiteBox> {
-      const box = await runtime.create(createBoxOptions(params), params.name ?? null)
+      const box = await startCreatedBox(await runtime.create(createBoxOptions(params), params.name ?? null))
       boxes.set(box.id, box)
       return mapBoxInfo(box.info())
     },

@@ -92,6 +92,7 @@ const mockState = vi.hoisted(() => {
         const box = makeBox({
           id: 'box_new',
           name: name ?? null,
+          state: { status: 'configured', running: false },
           image: boxOptions.rootfsPath ?? boxOptions.image ?? '',
           cpus: boxOptions.cpus ?? 1,
           memoryMib: boxOptions.memoryMib ?? 512,
@@ -208,6 +209,7 @@ describe('BoxLiteLocalClient', () => {
       cmd: ['-lc', 'sleep infinity'],
       user: 'sandbank',
     }), 'named-box')
+    expect(runtime.boxes.get('box_new').start).toHaveBeenCalledTimes(1)
     expect(box).toMatchObject({
       id: 'box_new',
       name: 'named-box',
