@@ -11,6 +11,9 @@ import { cloneCommand } from './commands/clone.js'
 import { keepCommand } from './commands/keep.js'
 import { addonsCommand } from './commands/addons.js'
 import { snapshotCommand } from './commands/snapshot.js'
+import { workspaceCommand } from './commands/workspace.js'
+import { harnessApiCommand } from './commands/harness-api.js'
+import { harnessBenchmarkCommand } from './commands/harness-benchmark.js'
 import { helpCommand } from './commands/help.js'
 import type { CliFlags } from './auth.js'
 
@@ -41,12 +44,12 @@ export function parseGlobalFlags(args: string[]): CliFlags {
 }
 
 export async function dispatch(args: string[]): Promise<void> {
-  if (takeFlag(args, '--version') || takeFlag(args, '-v')) {
+  if (args[0] === '--version' || args[0] === '-v') {
     console.log(VERSION)
     return
   }
 
-  if (takeFlag(args, '--help') || takeFlag(args, '-h') || args.length === 0) {
+  if (args[0] === '--help' || args[0] === '-h' || args.length === 0) {
     helpCommand()
     return
   }
@@ -68,6 +71,11 @@ export async function dispatch(args: string[]): Promise<void> {
     case 'keep':     return keepCommand(args, flags)
     case 'addons':   return addonsCommand(args, flags)
     case 'snapshot': return snapshotCommand(args, flags)
+    case 'workspace': return workspaceCommand(args, flags)
+    case 'harness-api': return harnessApiCommand(args, flags)
+    case 'db-native-harness': return harnessApiCommand(args, flags)
+    case 'harness-benchmark': return harnessBenchmarkCommand(args, flags)
+    case 'harness-bench': return harnessBenchmarkCommand(args, flags)
     case 'help':     return helpCommand()
     default:
       console.error(`Unknown command: ${command}`)
