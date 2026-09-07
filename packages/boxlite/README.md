@@ -5,18 +5,12 @@
 BoxLite provides lightweight micro-VMs using libkrun (Hypervisor.framework on macOS, KVM on Linux). This adapter supports two modes of operation:
 
 - **Remote mode** — Connect to a [BoxRun](https://github.com/nicholasgasior/boxlite) REST API server
-- **Local mode** — Run VMs directly on the local machine via the boxlite Python SDK
+- **Local mode** — Run VMs directly on the local machine via the official BoxLite Node.js SDK
 
 ## Install
 
 ```bash
 pnpm add @douglas-agent/sandbank-core @douglas-agent/sandbank-boxlite
-```
-
-For local mode, you also need the boxlite Python package:
-
-```bash
-pip install boxlite
 ```
 
 ## Usage
@@ -44,7 +38,7 @@ const { stdout } = await sandbox.exec('uname -a')
 await provider.destroy(sandbox.id)
 ```
 
-### Local mode (Python SDK)
+### Local mode (Node.js SDK)
 
 ```typescript
 import { createProvider } from '@douglas-agent/sandbank-core'
@@ -53,8 +47,7 @@ import { BoxLiteAdapter } from '@douglas-agent/sandbank-boxlite'
 const provider = createProvider(
   new BoxLiteAdapter({
     mode: 'local',
-    pythonPath: '/usr/bin/python3', // optional, defaults to 'python3'
-    boxliteHome: '~/.boxlite',     // optional
+    boxliteHome: '~/.boxlite', // optional
   })
 )
 
@@ -90,7 +83,7 @@ new BoxLiteAdapter({
 | `terminal` | ✅ | ✅ |
 | `sleep` | ✅ | ✅ |
 | `port.expose` | ✅ | ✅ |
-| `snapshot` | ✅ | — |
+| `snapshot` | ✅ | ✅ |
 
 ## Characteristics
 
@@ -98,7 +91,7 @@ new BoxLiteAdapter({
 - **Cold start:** ~3-5s
 - **File I/O:** tar archive upload/download
 - **Hypervisor:** Hypervisor.framework (macOS) / KVM (Linux)
-- **Local dependency:** `boxlite` Python package (local mode only)
+- **Local dependency:** official `@boxlite-ai/boxlite` Node.js SDK (local mode only)
 
 ## Architecture
 
@@ -108,10 +101,10 @@ new BoxLiteAdapter({
 │  mode: 'remote' | 'local'          │
 ├──────────────┬──────────────────────┤
 │ REST Client  │  Local Client        │
-│ (fetch)      │  (Python subprocess) │
+│ (fetch)      │  (Node.js SDK)       │
 ├──────────────┼──────────────────────┤
-│ BoxRun API   │  boxlite Python SDK  │
-│ (HTTP/JSON)  │  (JSON-line bridge)  │
+│ BoxRun API   │  @boxlite-ai/boxlite │
+│ (HTTP/JSON)  │  (N-API binding)     │
 └──────────────┴──────────────────────┘
 ```
 
