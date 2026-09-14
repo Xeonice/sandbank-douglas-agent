@@ -1,6 +1,8 @@
 # @douglas-agent/sandbank-core
 
-> Unified sandbox SDK for AI agents — provider abstraction, capability system, and error types.
+> Low-level sandbox provider SDK for AI agents — provider abstraction, capability system, and error types.
+
+`@sandbank.dev/core` is the provider SDK layer inside Sandbank. The top-level `sandbank` package builds the Workspace Agent Harness on top of this package by adding durable Workspace state, Tool Use, memory, and cross-provider task scheduling.
 
 ## Install
 
@@ -64,6 +66,32 @@ const session = await createSession({ provider, relay: { type: 'memory' } })
 const agent = await session.spawn('worker', { image: 'node:22' })
 await session.waitForAll()
 await session.close()
+```
+
+## Provider Image Catalogs
+
+Use `resolveProviderCreateConfig` when one logical image needs different provider-specific values, such as a Docker image for Daytona/Fly.io, an E2B template, or a BoxLite OCI image path.
+
+```typescript
+import { resolveProviderCreateConfig } from '@sandbank.dev/core'
+
+const images = {
+  'agent-node': {
+    default: 'ghcr.io/acme/agent-node:2026.06',
+    providers: {
+      e2b: 'agent-node-e2b-template',
+      boxlite: '/var/lib/boxlite/images/agent-node.oci',
+    },
+  },
+}
+
+const config = resolveProviderCreateConfig(
+  { image: 'agent-node', env: { RUN_ID: 'run-1' } },
+  provider.name,
+  images,
+)
+
+const sandbox = await provider.create(config)
 ```
 
 ## License
