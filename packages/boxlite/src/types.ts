@@ -15,16 +15,19 @@ export interface BoxLiteRemoteConfig {
   clientSecret?: string
 }
 
-/** Local mode: use boxlite Python SDK directly on this machine */
+/** Local mode: use the official BoxLite Node.js SDK directly on this machine */
 export interface BoxLiteLocalConfig {
   mode: 'local'
-  /** Path to Python 3.10+ interpreter (default: 'python3') */
+  /**
+   * @deprecated Ignored. Local mode now uses the official BoxLite Node.js SDK,
+   * not the Python SDK bridge.
+   */
   pythonPath?: string
-  /** BoxLite home directory (default: '~/.boxlite') */
+  /** BoxLite home directory passed to the official SDK as `homeDir` */
   boxliteHome?: string
 }
 
-/** BoxLite adapter configuration — remote (BoxRun REST API) or local (Python SDK) */
+/** BoxLite adapter configuration — remote (Sandbank/BoxLite REST API) or local (Node.js SDK) */
 export type BoxLiteAdapterConfig = BoxLiteRemoteConfig | BoxLiteLocalConfig
 
 // --- Unified client interface ---
@@ -59,7 +62,7 @@ export interface BoxLiteClient {
   dispose?(): Promise<void>
 }
 
-// --- BoxRun REST API / bridge response types ---
+// --- BoxLite REST API / local SDK response types ---
 
 export interface BoxLiteBox {
   id: string
