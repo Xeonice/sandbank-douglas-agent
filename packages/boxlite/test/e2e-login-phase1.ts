@@ -24,11 +24,10 @@ function log(label: string, ...args: unknown[]) {
 }
 
 async function main() {
-  const pythonPath = process.env['PYTHON_PATH'] ?? '/tmp/boxlite-venv/bin/python3'
   const boxliteHome = process.env['BOXLITE_HOME'] ?? '/tmp/sandbank-e2e-boxlite'
   const image = process.env['SANDBOX_IMAGE'] ?? 'codebox:latest'
 
-  const adapter = new BoxLiteAdapter({ mode: 'local', pythonPath, boxliteHome })
+  const adapter = new BoxLiteAdapter({ mode: 'local', boxliteHome })
   const provider = createProvider(adapter)
 
   let sandboxId: string | undefined
