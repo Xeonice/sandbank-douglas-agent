@@ -1,0 +1,31 @@
+{
+  "name": "@sandbank.dev/workspace",
+  "version": "0.1.0",
+  "description": "Workspace protocol and in-memory adapter for Sandbank agents",
+  "license": "MIT",
+  "type": "module",
+  "homepage": "https://sandbank.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chekusu/sandbank.git",
+    "directory": "packages/workspace"
+  },
+  "keywords": ["sandbox", "ai-agent", "workspace", "protocol"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^4.0.18"
+  }
+}

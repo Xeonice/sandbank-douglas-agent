@@ -8,21 +8,27 @@
 >
 > All upstream adapters (`flyio` / `boxlite` / `cloudflare` / `daytona` / `db9`) are mirrored with renamed scope. Upstream `main` is auto-merged weekly via `.github/workflows/sync-upstream.yml`.
 
-> Unified sandbox SDK for AI agents — write once, run on any cloud.
+> AI Agent 统一 Workspace Agent Harness — 一个 Workspace，多种后端沙盒。
 
-**[Website](https://sandbank.dev)** | **[中文文档](https://github.com/chekusu/sandbank/blob/main/README.zh-CN.md)** | **[日本語ドキュメント](https://github.com/chekusu/sandbank/blob/main/README.ja.md)**
+Sandbank 是面向 AI Agent 的统一 workspace harness。它把 Agent 身份、memory、artifact、audit log、文件和 checkpoint 固化在 `Workspace` 协议里，再把具体执行任务调度到 Sandbank Cloud、Dynamic Worker、E2B、BoxLite、Fly.io、Daytona、Cloudflare Workers 等后端沙盒。底层 provider SDK 仍然可单独使用，但 Sandbank 的顶层抽象已经从“统一沙箱接口”升级为“跨后端同步 Workspace 的 Agent Harness”。默认推荐的通用计算后端是 Sandbank Cloud：我们的托管 BoxLite 云服务。
 
-Sandbank provides a single TypeScript interface for creating, managing, and orchestrating cloud sandboxes. Switch between providers without changing your application code.
+**[官网](https://sandbank.dev)** | **[English](./README.en.md)** | **[日本語](./README.ja.md)**
 
-## Why Sandbank?
+<img src="./docs/assets/sandbank-robots-vacation-pixel.png" alt="像素画风格的一群小机器人 Agent 在海中沙滩上度假，每个机器人都有不同的开发者角色" width="100%" />
 
-AI agents need isolated execution environments. But every cloud provider has a different API — Daytona, Fly.io, Cloudflare Workers all speak different languages. Sandbank unifies them behind one interface:
+## 为什么选择 Sandbank?
+
+AI Agent 需要的不只是一个隔离沙箱。它需要一个可恢复、可审计、可跨运行时迁移的长期 Workspace，同时还要能按任务选择合适的计算后端：短 JS code mode 可以跑在 Cloudflare Dynamic Worker，Python、Codex 和 shell 任务默认优先派发到 Sandbank Cloud（托管 BoxLite），特殊场景再切到 E2B、本地 BoxLite、Fly.io 或 VM/container，最终输出同步回同一个 Workspace。
+
+底层沙箱 provider SDK 仍然可用，用来屏蔽 Daytona、Fly.io、Cloudflare Workers 等不同 API：
 
 ```typescript
 import { createProvider } from '@douglas-agent/sandbank-core'
 import { DaytonaAdapter } from '@douglas-agent/sandbank-daytona'
 
-const provider = createProvider(new DaytonaAdapter({ apiKey: '...' }))
+const provider = createProvider(new SandbankCloudAdapter({
+  apiToken: process.env.SANDBANK_API_TOKEN,
+}))
 const sandbox = await provider.create({ image: 'node:22' })
 
 const result = await sandbox.exec('echo "Hello from the sandbox"')
@@ -31,13 +37,13 @@ console.log(result.stdout) // Hello from the sandbox
 await provider.destroy(sandbox.id)
 ```
 
-Swap `DaytonaAdapter` for `FlyioAdapter` or `CloudflareAdapter` — zero code changes.
+Sandbank Cloud 是默认推荐 provider；把 `SandbankCloudAdapter` 换成 `DaytonaAdapter`、`FlyioAdapter` 或 `CloudflareAdapter`，沙箱创建/执行代码仍无需重写。更高一层的 harness 会把这些 provider 当作计算后端，而不是 Agent 的长期家。
 
-## Architecture
+## 架构
 
 ```
 ┌──────────────────────────────────────────────────────┐
-│  Your Application / AI Agent                         │
+│  你的应用 / AI Agent / 第三方调用方                    │
 ├──────────────────────────────────────────────────────┤
 │  @douglas-agent/sandbank-core         Unified Provider Interface   │
 │  @douglas-agent/sandbank-skills       Skill Registry & Injection   │
@@ -50,12 +56,15 @@ Swap `DaytonaAdapter` for `FlyioAdapter` or `CloudflareAdapter` — zero code ch
 ├──────────────────────────────────────────────────────┤
 │  @douglas-agent/sandbank-db9       Service Adapter (Data)      │
 ├──────────────────────────────────────────────────────┤
-│  Daytona    Fly.io Machines    Cloudflare Workers     │
-│  BoxLite (self-hosted Docker)    db9.ai (PostgreSQL)  │
+│  @sandbank.dev/db9       Service Adapter（数据）       │
+├──────────────────────────────────────────────────────┤
+│  Sandbank Cloud (托管 BoxLite)    BoxLite (自托管 Docker) │
+│  E2B Cloud Sandboxes    Daytona    Fly.io Machines    Cloudflare Workers │
+│  db9.ai (PostgreSQL)                                  │
 └──────────────────────────────────────────────────────┘
 ```
 
-## Packages
+## 包一览
 
 | Package | Description |
 |---------|-------------|
@@ -69,52 +78,55 @@ Swap `DaytonaAdapter` for `FlyioAdapter` or `CloudflareAdapter` — zero code ch
 | [`@douglas-agent/sandbank-relay`](./packages/relay) | WebSocket relay for multi-agent communication |
 | [`@douglas-agent/sandbank-agent`](./packages/agent) | Lightweight client for agents running inside sandboxes |
 
-## Provider Support
+## Provider 支持情况
 
-### Core Operations
+### 基础操作
 
-All providers implement these — the minimum contract:
+所有 Provider 都必须实现的最小契约：
 
-| Operation | Daytona | Fly.io | Cloudflare | BoxLite |
-|-----------|:-------:|:------:|:----------:|:-------:|
-| Create / Destroy | ✅ | ✅ | ✅ | ✅ |
-| List sandboxes | ✅ | ✅ | ✅ | ✅ |
-| Execute commands | ✅ | ✅ | ✅ | ✅ |
-| Read / Write files | ✅ | ✅ | ✅ | ✅ |
-| Skill injection | ✅ | ✅ | ✅ | ✅ |
+| 操作 | Sandbank Cloud | Daytona | Fly.io | Cloudflare | BoxLite | E2B |
+|------|:--------------:|:-------:|:------:|:----------:|:-------:|:---:|
+| 创建 / 销毁 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 列出沙箱 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 执行命令 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 读写文件 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Skill 注入 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-### Extended Capabilities
+### 扩展能力
 
-Capabilities are opt-in. Use `withVolumes(provider)`, `withPortExpose(sandbox)`, etc. to safely check and access them at runtime.
+能力是可选的。通过 `withVolumes(provider)`、`withPortExpose(sandbox)` 等函数在运行时安全检测并访问。
 
-| Capability | Daytona | Fly.io | Cloudflare | BoxLite | db9 | Description |
-|------------|:-------:|:------:|:----------:|:-------:|:---:|-------------|
-| `volumes` | ✅ | ✅ | ⚠️* | ❌ | — | Persistent volume management |
-| `port.expose` | ✅ | ✅ | ⚠️** | ✅ | — | Expose sandbox ports to the internet |
-| `exec.stream` | ❌ | ❌ | ✅ | ✅ | — | Stream stdout/stderr in real-time |
-| `snapshot` | ❌ | ❌ | ✅ | ✅ | — | Snapshot and restore sandbox state |
-| `terminal` | ✅ | ✅ | ✅ | ✅ | — | Interactive web terminal (ttyd) |
-| `sleep` | ❌ | ❌ | ❌ | ✅ | — | Hibernate and wake sandboxes |
-| `skills` | ✅ | ✅ | ✅ | ✅ | — | Load and inject skill definitions into sandboxes |
-| `services` | ❌ | ❌ | ❌ | ❌ | ✅ | Bind data services (PostgreSQL) to sandboxes |
+| 能力 | Sandbank Cloud | Daytona | Fly.io | Cloudflare | BoxLite | E2B | db9 | 说明 |
+|------|:--------------:|:-------:|:------:|:----------:|:-------:|:---:|:---:|------|
+| `volumes` | ❌ | ✅ | ✅ | ⚠️* | ❌ | ⚠️*** | — | 持久卷管理 |
+| `port.expose` | ✅ | ✅ | ✅ | ⚠️** | ✅ | ✅ | — | 将沙箱端口暴露到公网 |
+| `exec.stream` | ✅ | ❌ | ❌ | ✅ | ✅ | ❌ | — | 实时流式输出 stdout/stderr |
+| `snapshot` | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | — | 沙箱状态快照与恢复 |
+| `terminal` | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | — | 交互式 Web 终端 (ttyd) |
+| `sleep` | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | — | 休眠与唤醒 |
+| `skills` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | — | 加载并注入 Skill 定义到沙箱 |
+| `services` | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | 将数据服务 (PostgreSQL) 绑定到沙箱 |
 
-\* Cloudflare `volumes` requires `storage` option in adapter config.
+\* Cloudflare 的 `volumes` 需要在适配器配置中启用 `storage` 选项。
 
-\*\* Cloudflare reserves port 3000 for its sandbox control plane. Use any port in 1024–65535 except 3000.
+\*\* Cloudflare 保留了 3000 端口用于沙箱控制面板，可用范围为 1024–65535（不含 3000）。
 
-### Provider Characteristics
+\*\*\* E2B volumes 目前需要 E2B volume beta 权限。Sandbank 会用卷 `id` 连接 E2B `Volume` 后挂载。
 
-| | Daytona | Fly.io | Cloudflare | BoxLite |
-|---|---------|--------|------------|---------|
-| **Runtime** | Full VM | Firecracker microVM | V8 isolate + container | Docker container |
-| **Cold start** | ~10s | ~3-5s | ~1s | ~2-5s |
-| **File I/O** | Native SDK | Via exec (base64) | Native SDK | Via exec (base64) |
-| **Regions** | Multi | Multi | Global edge | Self-hosted |
-| **External deps** | `@daytonaio/sdk` | None (pure fetch) | `@cloudflare/sandbox` | BoxLite API |
+### Provider 特性对比
 
-## Multi-Agent Sessions
+| | Sandbank Cloud | Daytona | Fly.io | Cloudflare | BoxLite | E2B |
+|---|----------------|---------|--------|------------|---------|-----|
+| **定位** | 推荐默认 provider | 云沙箱 | VM/microVM | 边缘 Worker | 自托管 BoxLite | 云沙箱 |
+| **运行时** | 托管 BoxLite 容器 | 完整 VM | Firecracker 微虚拟机 | V8 隔离 + 容器 | Docker 容器 | E2B 云沙箱 |
+| **冷启动** | 托管服务优化 | ~10s | ~3-5s | ~1s | ~2-5s | Provider 管理 |
+| **文件 I/O** | Archive API | 原生 SDK | 通过 exec (base64) | 原生 SDK | 通过 exec (base64) | 原生 SDK |
+| **区域** | Sandbank 管理 | 多区域 | 多区域 | 全球边缘 | 自托管 | E2B 管理 |
+| **外部依赖** | `@sandbank.dev/cloud` + API token/x402 | `@daytonaio/sdk` | 无 (纯 fetch) | `@cloudflare/sandbox` | BoxLite API | `e2b` |
 
-Sandbank includes a built-in orchestration layer for multi-agent workflows. The **Relay** handles real-time messaging and shared context between sandboxes.
+## 多 Agent 会话
+
+Sandbank 内置编排层，支持多 Agent 实时协作。**Relay** 负责沙箱间的消息传递和共享上下文。
 
 ```typescript
 import { createSession } from '@douglas-agent/sandbank-core'
@@ -124,7 +136,7 @@ const session = await createSession({
   relay: { type: 'memory' },
 })
 
-// Spawn agents in isolated sandboxes
+// 在隔离沙箱中启动 Agent
 const architect = await session.spawn('architect', {
   image: 'node:22',
   env: { ROLE: 'architect' },
@@ -135,10 +147,10 @@ const developer = await session.spawn('developer', {
   env: { ROLE: 'developer' },
 })
 
-// Shared context — all agents can read/write
+// 共享上下文 — 所有 Agent 均可读写
 await session.context.set('spec', { endpoints: ['/users', '/posts'] })
 
-// Wait for all agents to complete
+// 等待所有 Agent 完成
 await session.waitForAll()
 await session.close()
 ```
@@ -148,26 +160,171 @@ Inside the sandbox, agents use `@douglas-agent/sandbank-agent`:
 ```typescript
 import { connect } from '@douglas-agent/sandbank-agent'
 
-const session = await connect() // reads SANDBANK_* env vars
+const session = await connect() // 自动读取 SANDBANK_* 环境变量
 
 session.on('message', async (msg) => {
   if (msg.type === 'task') {
-    // do work...
+    // 执行任务...
     await session.send(msg.from, 'done', result)
   }
 })
 
-await session.complete({ status: 'success', summary: 'Built 5 API endpoints' })
+await session.complete({ status: 'success', summary: '完成了 5 个 API 端点' })
 ```
 
-## Quick Start
+## Workspace Agent Harness
+
+Sandbank 的 harness 以 `WorkspaceAdapter` 为 Agent 的权威状态边界。一次 agent run 可以先让模型规划，再用 Dynamic Worker 执行受限 JS code mode，把生成的 Python 写入 Workspace，随后由 provider scheduler 优先选择 Sandbank Cloud，或按策略切换到 E2B、BoxLite、Daytona、Fly.io 等声明 `runtime.python` 的后端执行，最后把产物、日志和 memory 写回 Workspace。
+
+这种结构让调用方可以替换计算后端，而不用把 Agent 的长期状态绑在某个 VM、container、volume 或 Workers storage binding 上。权限边界也在 harness 层统一处理：Tool Use 请求先经过 Agent policy/resource grants/approval rules，再调用宿主注册的工具或调度 sandbox provider。
+
+## Provider-Neutral Workspaces（跨 Provider Workspace）
+
+Provider 原生 volume 都是 provider-specific 资源。Fly.io volume、E2B volume、Daytona volume、Cloudflare storage binding 并不是同一块持久磁盘。要在不同 sandbox provider 之间切换并保持状态连续，需要把权威状态放在 `WorkspaceAdapter` 里：运行前 materialize 到沙箱，运行后把变更 sync 回 Workspace，并在后端支持时创建 checkpoint。
+
+```typescript
+import {
+  MemoryWorkspaceAdapter,
+  materializeWorkspaceToSandbox,
+  syncWorkspaceFromSandbox,
+} from '@sandbank.dev/workspace'
+
+const workspace = new MemoryWorkspaceAdapter()
+await workspace.write('/workspace/task.md', 'ship it')
+
+const sandbox = await provider.create({ image: 'node:22' })
+await materializeWorkspaceToSandbox(workspace, sandbox, {
+  workspacePath: '/workspace',
+  sandboxPath: '/workspace',
+})
+
+await sandbox.exec('echo done > /workspace/result.txt')
+
+await syncWorkspaceFromSandbox(workspace, sandbox, {
+  workspacePath: '/workspace',
+  sandboxPath: '/workspace',
+  deleteMissing: true,
+  checkpointLabel: 'after provider run',
+})
+```
+
+Provider-native volumes 适合作为本地 cache 或 provider 内部持久化；跨 provider rollback、checkpoint、连续运行和一致性合并应以 Workspace 为准。
+
+## Provider Scheduler 与 Preflight
+
+顶层 `sandbank` 包导出 `selectSandboxProvider`、`preflightWorkspaceSandboxTask` 和 `runWorkspaceSandboxTask`。调度器把 sandbox provider 当作计算候选，根据 `runtime.python`、`runtime.codex`、`codex.exec`、`codex.goal`、`workspace.snapshot`、`workspace.live` 等声明能力选择 provider。
+
+```typescript
+import {
+  preflightWorkspaceSandboxTask,
+  runWorkspaceSandboxTask,
+} from 'sandbank'
+
+const taskConfig = {
+  workspace,
+  providers: [
+    { provider: sandbankCloudProvider, capabilities: ['runtime.python', 'codex.exec'], priority: 30 },
+    { provider: e2bProvider, capabilities: ['runtime.python'], priority: 10 },
+    { provider: boxliteProvider, capabilities: ['runtime.python'] },
+  ],
+  task: { kind: 'python' as const, path: '/workspace/generated/task.py', image: 'python-agent' },
+  imageCatalog: {
+    'python-agent': {
+      default: 'python:3.12',
+      'sandbank-cloud': 'python:3.12-slim',
+      e2b: 'e2b-python-template',
+      boxlite: 'python:3.12-slim',
+    },
+  },
+  preflight: { runtime: true },
+}
+
+const preflight = await preflightWorkspaceSandboxTask(taskConfig)
+if (!preflight.ok) throw new Error(preflight.errors.join('; '))
+
+await runWorkspaceSandboxTask({
+  ...taskConfig,
+  consistency: { mode: 'branch-merge', conflictResolution: 'keep-both' },
+  preflight: false,
+})
+```
+
+Static preflight 会在执行前检查 Workspace 和 provider 能力；runtime preflight 会创建临时 sandbox 探测镜像工具，例如 `python`、`codex`、`git`、`tmux`、`tar`、`gzip`。`codex.goal` 会启动 vas 风格的 `tmux` 会话并保留沙箱，方便终端 attach 和后续 Workspace sync。更多细节见 [Provider Scheduler And Workspace Consistency](./docs/provider-scheduler-workspace.md) 和 [Sandbank Agent Configuration](./docs/sandbank-agent-configuration.zh-CN.md)。
+
+## Agent Tool Use
+
+Sandbank Tool Use 是比单一模型 adapter 更底层的协议。模型循环、Dynamic Worker capsule 或托管 Agent 都提交结构化的 `tool.use` 请求；Agent Supervisor 会先检查该 Agent 的 tool/resource policy，然后才调用 handler 或 sandbox provider。
+
+```typescript
+import {
+  AgentSupervisor,
+  ToolUseRegistry,
+  createCloudflareResourceTool,
+  createSearchCodeRunTool,
+  createSandboxPythonTool,
+} from 'sandbank'
+
+const registry = new ToolUseRegistry()
+  .register(createCloudflareResourceTool('read', async input => {
+    // 这里可以连接 Cloudflare D1/KV/R2 等 bindings 或 API。
+    return { ok: true, resource: input.resource }
+  }))
+  .register(createSearchCodeRunTool({
+    search: {
+      provider: 'perplexity',
+      search: async query => searchProvider.search(query),
+      fetchJson: async url => searchProvider.fetchJson(url),
+    },
+  }))
+  .register(createSandboxPythonTool())
+
+const supervisor = new AgentSupervisor({
+  agentId: 'agent-a',
+  workspace,
+  modelId: 'deepseek-v4-pro',
+  toolUse: {
+    registry,
+    dynamicWorker,
+    sandboxProviders: [
+      { provider: sandbankCloudProvider, capabilities: ['runtime.python', 'codex.exec'] },
+      { provider: e2bProvider, capabilities: ['runtime.python'] },
+      { provider: boxliteProvider, capabilities: ['runtime.python'] },
+    ],
+    policy: {
+      allowedTools: ['cloudflare.resource.read', 'search.code.run', 'sandbox.python'],
+      resources: [
+        { kind: 'cloudflare.d1', id: 'analytics', actions: ['read'] },
+        { kind: 'dynamic_worker.execution', actions: ['execute'] },
+        { kind: 'runtime.javascript', actions: ['execute'] },
+        { kind: 'external.search', id: 'perplexity', actions: ['query'] },
+        { kind: 'http.egress', id: 'api.example.com', actions: ['fetch'] },
+        { kind: 'workspace.path', scope: '/runs', actions: ['write'] },
+        { kind: 'sandbox.provider', id: 'sandbank-cloud', actions: ['execute'] },
+        { kind: 'sandbox.provider', id: 'e2b', actions: ['execute'] },
+        { kind: 'runtime.python', actions: ['execute'] },
+      ],
+      requireApproval: [
+        { kind: 'cloudflare.d1', action: 'write' },
+      ],
+    },
+  },
+})
+```
+
+Tool 注册目前由第三方宿主代码完成：调用方在初始化 harness/supervisor 时创建 `ToolUseRegistry`，通过 `.register(...)` 注入工具定义，再用每个 agent/run 的 policy 启用白名单。当前没有开放“远程任意用户注册 tool”的管理端点。
+
+`resources` 是 Agent 启用时的计算和数据资源白名单。即使 prompt 要求 Agent 修改用户数据库，请求也必须匹配允许的 resource/action，并满足对应的 approval rule。`search.code.run` 是 code mode：模型可以生成 JavaScript 函数体，由 Dynamic Worker 执行，并只能通过 `ctx.search`、`ctx.workspace`、`ctx.runtime` 这些受控 binding 访问能力；裸网络访问仍要匹配 `http.egress` grant。`sandbox.python` 会走 provider scheduler，因此 Dynamic Worker 生成的 Python 可以派发到 E2B、BoxLite、Sandbank Cloud 或任何声明 `runtime.python` 的 provider。Dynamic Worker capsule 通过 `SANDBANK_TOOLS.list()` 和 `SANDBANK_TOOLS.use(request)` 走同一条 supervisor policy，不会绕过权限控制。
+
+## 快速开始
 
 ```bash
 # Install
 pnpm add @douglas-agent/sandbank-core @douglas-agent/sandbank-daytona  # or @douglas-agent/sandbank-flyio, @douglas-agent/sandbank-cloudflare
 
-# Set up provider
-export DAYTONA_API_KEY=your-key
+# 配置 Provider
+export SANDBANK_API_TOKEN=your-key
+# 或使用 x402 按次付费
+export WALLET_PRIVATE_KEY=0x...
 ```
 
 ```typescript
@@ -175,49 +332,87 @@ import { createProvider } from '@douglas-agent/sandbank-core'
 import { DaytonaAdapter } from '@douglas-agent/sandbank-daytona'
 
 const provider = createProvider(
-  new DaytonaAdapter({ apiKey: process.env.DAYTONA_API_KEY! })
+  new SandbankCloudAdapter({ apiToken: process.env.SANDBANK_API_TOKEN })
 )
 
-// Create a sandbox
+// 创建沙箱
 const sandbox = await provider.create({
   image: 'node:22',
   resources: { cpu: 2, memory: 2048 },
   autoDestroyMinutes: 30,
 })
 
-// Run commands
+// 执行命令
 const { stdout } = await sandbox.exec('node --version')
 
-// File operations
+// 文件操作
 await sandbox.writeFile('/app/index.js', 'console.log("hi")')
 await sandbox.exec('node /app/index.js')
 
-// Clean up
+// 清理
 await provider.destroy(sandbox.id)
 ```
 
-## Development
+## 开发
 
 ```bash
 git clone https://github.com/chekusu/sandbank.git
 cd sandbank
 pnpm install
 
-# Run all unit tests
+# 运行全部单元测试
 pnpm test
 
-# Run cross-provider conformance tests
+# 运行跨 Provider 一致性测试
 pnpm test:conformance
 
-# Typecheck
+# 类型检查
 pnpm typecheck
 ```
 
-### Running Integration Tests
+### DB-native Harness API
 
-Integration tests hit real APIs and are gated by environment variables:
+`sandbank` CLI 和 Worker entrypoint 暴露了公开的 Sandbank harness API，底层由 Agent Supervisor、db9 Workspace storage 和 DeepSeek V4 Pro 驱动：
 
 ```bash
+DB9_DATABASE_ID=... DB9_TOKEN=... DEEPSEEK_API_KEY=... \
+  vas dev sandbank-harness pnpm --filter ./packages/sandbank exec tsx src/cli/index.ts harness-api --host 0.0.0.0 --port 8789
+```
+
+Routes:
+
+- `GET /health`
+- `GET /api/db-native-agent-harness/capabilities`
+- `POST /api/sandbank-agent-harness/stream`
+- `POST /api/db-native-agent-harness/stream`
+
+stream 会发送通用 Sandbank SSE events，把 run input/output 持久化到 `/runs/...`，把 supervisor state/audit data 写入 `/agents/...`，并在 Workspace 后端支持时创建 checkpoint。默认模型是 `deepseek-v4-pro`。它还会把 Agent memory 存在 `/agents/{agentId}/memory/memories.jsonl`，将 active `pinned` / `insight` / `session` 记忆注入模型 prompt，并把显式的 `remember` / `记住` 请求写成 pinned memory。Worker-compatible entrypoint 导出为 `sandbank/harness-worker`；Node CLI 用于通过 `vas dev` 或等价部署路径托管服务，不是 localhost-only preview。模型、Workspace、provider 和镜像要求见 [Sandbank Agent Configuration](./docs/sandbank-agent-configuration.zh-CN.md)。
+
+用一个 prompt 对线上 harness 做 benchmark：
+
+```bash
+pnpm --filter ./packages/sandbank exec tsx src/cli/index.ts harness-benchmark \
+  --base-url https://your-sandbank-worker.example \
+  --question "@agent run a Sandbank harness health check" \
+  --json
+```
+
+运行默认 benchmark suite：
+
+```bash
+SANDBANK_HARNESS_BASE_URL=https://your-sandbank-worker.example pnpm bench:harness -- --json
+```
+
+benchmark 会把每个 case POST 到 `/api/db-native-agent-harness/stream`，记录 SSE timeline，并按 HTTP/SSE transport、harness lifecycle、Workspace persistence、Dynamic Worker capsule execution、model streaming、case expectations 和 latency 计分，满分 100。
+
+### 运行集成测试
+
+集成测试会调用真实 API，通过环境变量控制开关：
+
+```bash
+# Sandbank Cloud（推荐默认 provider）
+SANDBANK_API_TOKEN=... pnpm test
+
 # Daytona
 DAYTONA_API_KEY=... pnpm test
 
@@ -231,27 +426,27 @@ E2E_WORKER_URL=... pnpm test
 DB9_TOKEN=... pnpm --filter @douglas-agent/sandbank-db9 test:e2e
 ```
 
-## Test Coverage
+## 测试覆盖率
 
 | Package | Stmts | Branch | Funcs | Lines | Unit | Integration |
 |---------|:-----:|:------:|:-----:|:-----:|:----:|:-----------:|
 | `@douglas-agent/sandbank-core` | 84% | 77% | 74% | 88% | 98 | — |
 | `@douglas-agent/sandbank-db9` | 100% | 97% | 93% | 100% | 35 | 3 |
 
-Run coverage locally:
+本地运行 coverage：
 
 ```bash
 pnpm --filter @douglas-agent/sandbank-db9 test -- --coverage
 ```
 
-## Design Principles
+## 设计原则
 
-1. **Minimal interface, maximum interop** — only the true common denominator (exec + files + lifecycle)
-2. **Explicit over implicit** — no auto-fallback, no caching, no hidden retries
-3. **Capability detection, not fake implementations** — if a provider doesn't support it, it errors
-4. **Idempotent operations** — destroying an already-destroyed sandbox is a no-op
-5. **Full decoupling** — provider layer and session layer are independent, compose freely
+1. **最小接口，最大互操作** — 只做真正的最大公约数 (exec + files + lifecycle)
+2. **显式优于隐式** — 不自动 fallback、不缓存、不隐式重试
+3. **能力检测，而非假实现** — 不支持就报错，不返回假数据
+4. **幂等操作** — 销毁已销毁的沙箱不报错
+5. **完全解耦** — Provider 层和 Session 层独立，自由组合
 
-## License
+## 许可证
 
 MIT

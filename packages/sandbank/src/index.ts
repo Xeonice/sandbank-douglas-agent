@@ -1,5 +1,5 @@
 /**
- * sandbank — Unified sandbox SDK for AI agents
+ * sandbank — Workspace Agent Harness for AI agents
  *
  * This package re-exports everything from @douglas-agent/sandbank-core.
  * For provider adapters, install them separately:
