@@ -1,7 +1,7 @@
 {
   "name": "@douglas-agent/sandbank-cli",
   "version": "0.5.4",
-  "description": "Unified sandbox SDK and CLI for AI agents — write once, run on any cloud",
+  "description": "Workspace Agent Harness and sandbox orchestration CLI for AI agents",
   "license": "MIT",
   "type": "module",
   "repository": {
@@ -12,10 +12,14 @@
   "homepage": "https://sandbank.dev",
   "keywords": [
     "sandbox",
+    "workspace",
+    "harness",
     "ai-agent",
     "ai",
     "agent",
     "cloud",
+    "sandbank-cloud",
+    "boxlite",
     "sdk",
     "cli",
     "daytona",
@@ -31,16 +35,42 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./harness-api": {
+      "types": "./dist/harness-api.d.ts",
+      "import": "./dist/harness-api.js"
+    },
+    "./harness-worker": {
+      "types": "./dist/harness-worker.d.ts",
+      "import": "./dist/harness-worker.js"
+    },
+    "./harness-node": {
+      "types": "./dist/harness-node.d.ts",
+      "import": "./dist/harness-node.js"
+    },
+    "./harness-benchmark": {
+      "types": "./dist/harness-benchmark.d.ts",
+      "import": "./dist/harness-benchmark.js"
+    },
+    "./agent-supervisor": {
+      "types": "./dist/agent-supervisor.d.ts",
+      "import": "./dist/agent-supervisor.js"
+    },
+    "./tool-use": {
+      "types": "./dist/tool-use.d.ts",
+      "import": "./dist/tool-use.js"
     }
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "harness-benchmark.cases.json"
   ],
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "bench:harness": "tsx src/cli/index.ts harness-benchmark --cases ./harness-benchmark.cases.json"
   },
   "dependencies": {
     "@douglas-agent/sandbank-cloud": "workspace:*",

@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - README terminal capability updated from ❌ to ✅ for all providers (ttyd-based implementation)
+- `@sandbank.dev/boxlite` local mode now uses the official `@boxlite-ai/boxlite` Node.js SDK instead of the Python bridge
 
 ## [0.1.0] - 2026-02-27
 
