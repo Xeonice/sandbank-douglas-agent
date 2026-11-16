@@ -13,6 +13,9 @@ const mocks = vi.hoisted(() => ({
   keepCommand: vi.fn(),
   addonsCommand: vi.fn(),
   snapshotCommand: vi.fn(),
+  workspaceCommand: vi.fn(),
+  harnessApiCommand: vi.fn(),
+  harnessBenchmarkCommand: vi.fn(),
   helpCommand: vi.fn(),
 }))
 
@@ -27,6 +30,9 @@ vi.mock('./commands/clone.js', () => ({ cloneCommand: mocks.cloneCommand }))
 vi.mock('./commands/keep.js', () => ({ keepCommand: mocks.keepCommand }))
 vi.mock('./commands/addons.js', () => ({ addonsCommand: mocks.addonsCommand }))
 vi.mock('./commands/snapshot.js', () => ({ snapshotCommand: mocks.snapshotCommand }))
+vi.mock('./commands/workspace.js', () => ({ workspaceCommand: mocks.workspaceCommand }))
+vi.mock('./commands/harness-api.js', () => ({ harnessApiCommand: mocks.harnessApiCommand }))
+vi.mock('./commands/harness-benchmark.js', () => ({ harnessBenchmarkCommand: mocks.harnessBenchmarkCommand }))
 vi.mock('./commands/help.js', () => ({ helpCommand: mocks.helpCommand }))
 
 import { takeFlag, takeOption, parseGlobalFlags, dispatch, VERSION } from './index.js'
@@ -123,6 +129,11 @@ describe('dispatch', () => {
     ['keep', 'keepCommand', ['keep', 'abc']],
     ['addons', 'addonsCommand', ['addons', 'list']],
     ['snapshot', 'snapshotCommand', ['snapshot', 'list', 'abc']],
+    ['workspace', 'workspaceCommand', ['workspace', 'inspect']],
+    ['harness-api', 'harnessApiCommand', ['harness-api']],
+    ['db-native-harness', 'harnessApiCommand', ['db-native-harness']],
+    ['harness-benchmark', 'harnessBenchmarkCommand', ['harness-benchmark', '--help']],
+    ['harness-bench', 'harnessBenchmarkCommand', ['harness-bench', '--help']],
     ['help', 'helpCommand', ['help']],
   ]
 

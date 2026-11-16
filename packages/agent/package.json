@@ -26,6 +26,9 @@
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"
   },
+  "dependencies": {
+    "@sandbank.dev/workspace": "workspace:*"
+  },
   "peerDependencies": {
     "@douglas-agent/sandbank-core": "workspace:*"
   },
